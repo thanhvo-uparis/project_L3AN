@@ -1,0 +1,111 @@
+*{
+   margin: 0px; 
+   padding: 0px;
+}
+
+#tete{
+     background-color: blue; 
+}
+
+body{
+  font-family: tohama;
+  font-size: 16px;
+}
+
+#menu{
+  width: 650px;
+   height: 40px;
+   margin: 50px auto;
+  
+}
+
+ul.parents > li{
+      list-style: none;      /* bo dau cham truoc moi ligne*/
+      float: left;     /* nam sang ben trai */
+      position: relative;
+      
+}
+ul.parents > li > a{
+      text-decoration: none;      /*bo gach chan phia duoi moi <a> */
+      color: gray;   
+      padding: 0px 15px 0px 15px;
+      line-height: 40px;
+      display:block;     
+}
+
+ul > li > a:hover{
+   background: blue;
+}
+
+ul.sous_menu{
+    display: none;
+    position: absolute;
+}
+ul.sous_menu li {
+    list-style: none;
+}
+
+ul.sous_menu li a{
+   text-decoration: none;
+   color: gray;
+   display: block;
+   
+}
+ul.parents >li:hover ul.sous_menu{
+    display: block;
+}
+
+
+.form{
+
+     width: 350px;
+     height: 300px;
+     border: 1px solid blue;
+     text-align: center;
+     border-radius: 10px;
+     margin-left: auto;
+     margin: 30px auto;
+     background-color: white;
+
+
+}
+
+h2{
+   color: #1E90FF;
+}
+
+button:hover{
+  width: 250px;
+  width: 40px;
+  border-radius: 5px;
+  border: none;
+  background-color: #1E90FF;
+}
+
+.entrer{
+     border: 1px solid blue;
+     margin-bottom: 10px;
+     border-radius: 5px;
+     margin-left: auto;
+     margin-right: auto;
+
+}
+
+.motdepasse{
+     border: 1px solid blue;
+     margin-bottom: 10px;
+     border-radius: 5px;
+     margin-left: auto;
+     margin-right: auto;
+
+}
+
+.entrer input{
+     border: none;
+     outline: none;
+}
+
+.motdepasse input{
+     border: none;
+     outline: none;
+}
