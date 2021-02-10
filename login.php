@@ -10,7 +10,7 @@
    $rs = mysqli_query($db, $sql);
 
    if(mysqli_num_rows($rs) > 0){
-      header("Location: C:\ xampp \ htdocs \project \contact.php");
+      header("Location: contact.php");
    }
    else{
        
