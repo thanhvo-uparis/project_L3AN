@@ -1,7 +1,7 @@
-*{
+*{ 
    margin: 0px; 
-   padding: 0px;
-}
+   padding: 2px;
+ } 
 
 #tete{
      background-color: blue; 
@@ -55,26 +55,36 @@ ul.parents >li:hover ul.sous_menu{
     display: block;
 }
 
+/*#grand-container{
+      width: auto;
+      height: 100%;
+      background-color: red;
+      background-image: url(background.png);
+}
+*/
 
-.form{
-
+ .container{
      width: 350px;
      height: 300px;
-     border: 1px solid blue;
+     margin: auto;
+     border: 1px solid orange;
      text-align: center;
      border-radius: 10px;
-     margin-left: auto;
+     /*
+     border: 1px solid orange;
+     text-align: center;
+     border-radius: 10px;
+     
      margin: 30px auto;
+     */
      background-color: white;
-
-
 }
 
-h2{
+form legend{
    color: #1E90FF;
 }
 
-button:hover{
+form button:hover{
   width: 250px;
   width: 40px;
   border-radius: 5px;
@@ -82,7 +92,7 @@ button:hover{
   background-color: #1E90FF;
 }
 
-.entrer{
+.form-group{
      border: 1px solid blue;
      margin-bottom: 10px;
      border-radius: 5px;
@@ -91,21 +101,9 @@ button:hover{
 
 }
 
-.motdepasse{
-     border: 1px solid blue;
-     margin-bottom: 10px;
-     border-radius: 5px;
-     margin-left: auto;
-     margin-right: auto;
 
-}
 
-.entrer input{
-     border: none;
-     outline: none;
-}
-
-.motdepasse input{
+.form-group input{
      border: none;
      outline: none;
 }
