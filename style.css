@@ -62,7 +62,12 @@ ul.parents >li:hover ul.sous_menu{
       background-image: url(background.png);
 }
 */
-
+/*#grand-container{
+      width: auto;
+      height: auto;
+      background-image: url(background.png);
+}
+*/
  .container{
      width: 350px;
      height: 300px;
@@ -78,6 +83,7 @@ ul.parents >li:hover ul.sous_menu{
      margin: 30px auto;
      */
      background-color: white;
+}
 }
 
 form legend{

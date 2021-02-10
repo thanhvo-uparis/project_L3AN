@@ -1,6 +1,6 @@
 <?php
-   function login(){
-      $u = $_POST['username'];
+   
+   $u = $_POST['username'];
    $p = $_POST['password'];
 
    $db = mysqli_connect("localhost", "root", "", "mazarsproject");
@@ -10,16 +10,13 @@
    $rs = mysqli_query($db, $sql);
 
    if(mysqli_num_rows($rs) > 0){
-      header("Location: contact.php");
+      header("Location: C:\ xampp \ htdocs \project \contact.php");
    }
    else{
-       /**echo "<h2>Le nom d'utilisateur ou le mot de passe est incorrect<h2>";
-       header("localtion: ./project/index.html"); **/
-      
+       
        echo "<h2>Le nom d'utilisateur ou le mot de passe est incorrect<h2>";
-
+    
+    } 
    
-   } 
-   }
    
 ?>
