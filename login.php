@@ -10,11 +10,11 @@
    $rs = mysqli_query($db, $sql);
 
    if(mysqli_num_rows($rs) > 0){
-      header("Location: contact.php");
+      header("Location: document.php");
    }
    else{
        
-       echo "<h2>Le nom d'utilisateur ou le mot de passe est incorrect<h2>";
+       echo "<h2>vous etes pas reussi à enregistrementt<h2>";
     
     } 
    

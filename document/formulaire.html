@@ -2,76 +2,80 @@
 <html>
   <head>
     <title>formulaire pour la bdd</title>
-    <link rel="stylesheet" type="text/css" href="#" />
+    <link rel="stylesheet" type="text/css" href="form_doc.css" />
     <meta charset="utf-8">
   </head>
   <body>
     <div class="container">
       <div class="row col-md-6 col-md-offset-3">
         <div class="panel panel-primary">
-          <div class="panel-heading text-center">
-            <h1>Veuillez remplir les champs suivants :</h1>
-          </div>
+            <div class="formulaire">
           <div class="panel-body">
+              <h1>Veuillez remplir les champs suivants :</h1>
             <form action="connect.php" method="post">
                 
               <div class="form-group">
-                <label for="Nom_du_controle">Nom du control</label>
-                <input type="text" class="form-group" id="Nom_du_controle" name="Nom_du_controle"/>
+                <label for="nom_du_controle">Nom du controle :</label>
+                <input type="text" class="form-group" id="nom_du_controle" name="nom_du_controle"/>
               </div>
                 
               <div class="form-group">
-                <label for="Deadline">Deadline</label>
-                <input type="date" class="form-control" id="Deadline" name="Deadline"/>
+                <label for="deadline">Deadline</label>
+                <input type="date" class="form-control" id="deadline" name="deadline"/>
               </div>
               <div class="form-group">
-                <label for="Realise_par">Realise par</label>
-                <input type="text" class="form-control" id="Realise_par" name="Realise_par"/>
+                <label for="realise_par">Realise par</label>
+                <input type="text" class="form-control" id="realise_par" name="realise_par"/>
              </div>
               <div class="form-group">
-                <label for="Statut">statut</label>
-                <select class="form-control" id="Statut" name="Statut">
-                        <option value="choix ?">selectionne</option>
+                <label for="statut">statut</label>
+                <select class="form-control" id="statut" name="statut">
+                        <option value="choix ?"></option>
                         <option value="Non debute">Non debute</option>
-                        <option value="Documenté">Documente</option>
+                        <option value="Documente">Documente</option>
                         <option value="Revu">Revu</option>
                         <option value="Sign-off">Sign-off</option>
                 </select>
               </div>
               <div class="form-group">
-                <label for="Niveau_de_risque">Niveau de risque</label>
-                <select name="Niveau_de_risque">
-                            <option value="choix ?">selectionne</option>
-                            <option value="Elevé">Eleve</option>
+                <label for="niveau_de_risque">Niveau de risque</label>
+                <select name="niveau_de_risque">
+                            <option value="choix ?"></option>
+                            <option value="Eleve">Eleve</option>
                             <option value="Moyen">Moyen</option>
                             <option value="Faible">Faible</option>
                 </select>
               </div>
                 <div class="form-group">
-                    <label for="Design">Design</label>
-                 <select class="form-control" id="Design"  name="Design">
-                            <option value="choix ?">selectionne</option>
+                    <label for="design">Design</label>
+                 <select class="form-control" id="design"  name="design">
+                            <option value="choix ?"></option>
                             <option value="Effectif">Effectif</option>
-                            <option value="RQ-majeur">Remarque majeur</option>
-                            <option value="RQ-Mineur">Remarque mineur</option>
+                            <option value="Remarque majeur">Remarque majeur</option>
+                            <option value="Remarque mineur">Remarque mineur</option>
                             <option value="Non-effectif">Non-effectif</option>
                         </select>
                 </div>
                 <div class="form-group">
-                <label for="Efficacite">Efficacité</label>
-                 <select class="form-control" id="Efficacite"  name="Efficacite">
-                            <option value="choix ?">selectionne</option>
+                <label for="efficacite">Efficacité</label>
+                 <select class="form-control" id="efficacite"  name="efficacite">
+                            <option value="choix ?"></option>
                             <option value="Effectif">Effectif</option>
-                            <option value="RQ-majeur">Remarque majeur</option>
-                            <option value="RQ-Mineur">Remarque mineur</option>
+                            <option value="Remarque majeur">Remarque majeur</option>
+                            <option value="Remarque mineur">Remarque mineur</option>
                             <option value="Non-effectif">Non-effectif</option>
                         </select>
                 </div>
-              <input type="submit" class="btn btn-primary" />
+                <div class="form-group">
+                <label for="categorie">Nom de la categorie :</label>
+                <input type="text" class="form-group" id="categorie" name="categorie"/>
+              </div>
+              <input type="submit" class="btn btn-primary"/>
             </form>
           </div>
         </div>
       </div>
     </div>
+        </div>
     </body>
 </html>
