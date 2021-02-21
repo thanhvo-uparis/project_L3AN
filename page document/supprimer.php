@@ -11,7 +11,7 @@ if(isset($_GET[$id])){
     echo " ";
 }
 
-$sql = "delete from tableau_doc where id = $id";
+$sql = "delete from control where id = $id";
 
     if($connect ->query($sql) === TRUE) {
         echo " ";

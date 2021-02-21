@@ -50,7 +50,7 @@
             $db = new mysqli('localhost', 'root', '', 'bdd_projet-l3an1') or die("unable to connect");
             
             
-            $sql = "select * from tableau_doc order by categorie";
+            $sql = "select * from control order by categorie";
             $result = mysqli_query($db, $sql) or die ("bad query");
             
             echo "<table border='1' class='tab'>";
