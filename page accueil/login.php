@@ -1,20 +1,20 @@
 <?php
    
-   $u = $_POST['username'];
-   $p = $_POST['password'];
+   $u = $_POST['email'];
+   $p = $_POST['mot_de_passe'];
 
-   $db = mysqli_connect("localhost", "root", "", "mazarsproject");
+   $bdd = mysqli_connect("localhost", "root", "", "bdd_projet-l3an1");
 
-   $sql = "select * from user where nom='$u' and motdepasse='$p'";
+   $sql = "select * from utilisateur where email='$u' and mot_de_passe='$p'";
 
-   $rs = mysqli_query($db, $sql);
+   $rs = mysqli_query($bdd, $sql);
 
    if(mysqli_num_rows($rs) > 0){
       header("Location: document.php");
    }
    else{
        
-       echo "<h2>vous etes pas reussi à enregistrementt<h2>";
+       echo "<h2>vous n'etes pas reussi à enregistrementt<h2>";
     
     } 
    

@@ -11,7 +11,7 @@ if(isset($_GET[$id])){
     echo " ";
 }
 
-$sql = "delete from control where id = $id";
+$sql = "delete from controle where id = $id";
 
     if($connect ->query($sql) === TRUE) {
         echo " ";
@@ -20,6 +20,7 @@ $sql = "delete from control where id = $id";
     }
 
     $connect -> close();
+    header("Location: document.php");
 ?>
 
 

@@ -46,20 +46,23 @@
 
           <div class="form-group">
             <img src="./icon_username.png" width="20px" height="15px">
-            <label for="">Username</label>
-            <input type="text" class="form-control" id="" placeholder="input username" name="username">
+            <label for="">Email</label>
+            <input type="email" class="form-control" id="" placeholder="Adresse e-mail" name="email">
           </div>
 
           <div class="form-group">
             <img src="./icon_motdepasse.png" width="20px" height="15px">
-            <label for="">Password</label>
-            <input type="password" class="form-control" name="password" id="" placeholder="password">
+            <label for="">Mot de passe</label>
+            <input type="password" class="form-control" name="mot_de_passe" id="" placeholder="Saisissez votre mot de passe">
           </div>
 
           <button type="submit" class="btn btn-primary">Se Connecter</button>
-          <br><button type="text">Mot de passe oublié?</button>
-          
-     </form>
+          </form>
+          <form action="oublie_mdp.php" method="post">
+             <div>
+               <button type="submit">Oublié la mot de passe?</button>
+             </div>
+          </form>
           
         </div>
          
@@ -77,6 +80,15 @@
     }
    </style>>  
   
+  <?php
+   if(isset($_POST['email'], $_POST['mot_de_passe'])){
+     $stmt = $bdd->prepage('select mot_de_passe from utilisateur where email = ?');
+     $stmt->execute([$_POST['email']]);
+     $mot_de_passe = $stmt->fetchColumn();
+     echo "$mot_de_passe";
+   } 
+
+  ?>
 	 
   
 </body>

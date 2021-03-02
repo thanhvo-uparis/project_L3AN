@@ -1,3 +1,10 @@
+<?php 
+            $db = new mysqli('localhost', 'root', '', 'bdd_projet-l3an1') or die("unable to connect");
+            
+            
+            $sql = "select * from controle order by categorie";
+            $result = mysqli_query($db, $sql) or die ("bad query");
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -8,11 +15,6 @@
     </head>
     
     <body>
-        <!--<scipt>
-        function confirmation(){
-            return confirm("etes vous sur de vouloir supprimer ce controle ?);
-            }
-        </scipt> -->
         <header>
         <a href="accueil.html"><img src="mazars-logo.png" alt="logo de mazar"></a>
         <nav>
@@ -36,83 +38,89 @@
             </ol>
         </div>
             
-            <br><br>
+            <br>
         <div class="tableau_documentation">
         <div class="barre_doutil">
-                    <button type="button"><a href="formulaire.html">Ajouter controles</a></button>
-                    <button type="button">Ajouter une catégories</button>
-                    <button type="button">Supprimer une catégories</button>
-                    <button type="button">Mofifer statut</button>
-        </div class="tableau">
-            
-            <?php
-            
-            $db = new mysqli('localhost', 'root', '', 'bdd_projet-l3an1') or die("unable to connect");
-            
-            
-            $sql = "select * from control order by categorie";
-            $result = mysqli_query($db, $sql) or die ("bad query");
-            
-            echo "<table border='1' class='tab'>";
-            echo "<tr>
+                    <button type="button"><a href="form_doc.php">Ajouter controles</a></button>
+                    <button type="button"><a href="ajout_cat.php">Ajouter une catégorie</a></button>
+                    <button type="button"><a href="supp_cat.php">Supprimer une categorie</a></button>
+                    <button type="button"><a href="mod_statut.php">Modifer statut</a></button>
+            </div></div>
+        <div class="table">
+            <form action="sup_several.php" method="post">
+            <table border='1' class='tab'>
+            <tr>
+                       <th> </th>
                        <th>Nom de controle</th>
-                       <th>DEADLINE</th>
-                       <th>Realise par</th>
+                       <th>Deadline</th>
+                       <th>Affecté à</th>
                        <th>Statut</th>
                        <th>Niveau de risque</th>
                        <th>Design</th>
                        <th>Efficacite</th>
                        <th>Categorie</th>
                        <th>Commentaires</th>
-                       </tr>\n";
-            
-            while($row=mysqli_fetch_row($result)){
+            </tr>
+            <?php    
+            while($row=mysqli_fetch_array($result)){
                 echo"<tr>
-                <td>{$row[1]}</td>
-                <td>{$row[2]}</td>
-                <td>{$row[3]}</td>";
-                if($row[4] == 'Non debute'){
-                echo "<td style=\"background :red;\">{$row[4]}</td>";
-                    } elseif($row[4] == 'Documente'){
-                    echo "<td style=\"background :orange;\">{$row[4]}</td>";
-                    }elseif($row[4] == 'Revu'){
-                    echo "<td style=\"background :yellowgreen;\">{$row[4]}</td>";
+                <td><input type='checkbox' name='ids[]' value=".$row['id']."></td>
+                <td>".$row["nom_du_controle"]."</td>
+                <td>".$row["deadline"]."</td>";
+                if($row["statut"] == 'Non debute'){
+                echo "<td>".$row["email_utilisateur_realise_par"]."</td>";
+                    } elseif($row["statut"] == 'Documente'){
+                    echo "<td style=\"background :orange;\">".$row["statut"]."</td>";
+                    }elseif($row["statut"] == 'Revu'){
+                    echo "<td>".$row["email_utilisateur_revu_par"]."</td>";
                 }else{
-                        echo "<td style=\"background :green;\">{$row[4]}</td>";
+                        echo "<td>".$row["email_utilisateur_sign_off"]."</td>";
                 }
-                if($row[5] == 'Eleve'){
-                echo "<td style=\"background :red;\">{$row[5]}</td>";
-                    } elseif($row[5] == 'Moyen'){
-                    echo "<td style=\"background :orange;\">{$row[5]}</td>";
+                if($row["statut"] == 'Non debute'){
+                echo "<td style=\"background :red;\">".$row["statut"]."</td>";
+                    } elseif($row["statut"] == 'Documente'){
+                    echo "<td style=\"background :orange;\">".$row["statut"]."</td>";
+                    }elseif($row["statut"] == 'Revu'){
+                    echo "<td style=\"background :yellowgreen;\">".$row["statut"]."</td>";
+                }else{
+                        echo "<td style=\"background :green;\">".$row["statut"]."</td>";
+                }
+                if($row["niveau_de_risque"] == 'Eleve'){
+                echo "<td style=\"background :red;\">".$row["niveau_de_risque"]."</td>";
+                    } elseif($row["niveau_de_risque"] == 'Moyen'){
+                    echo "<td style=\"background :orange;\">".$row["niveau_de_risque"]."</td>";
                     }else{
-                        echo "<td style=\"background :green;\">{$row[5]}</td>";
+                        echo "<td style=\"background :green;\">".$row["niveau_de_risque"]."</td>";
                 }
-                if($row[6] == 'Non-effectif'){
-                echo "<td style=\"background :red;\">{$row[6]}</td>";
-                    } elseif($row[6] == 'Remarque majeur'){
-                    echo "<td style=\"background :orange;\">{$row[6]}</td>";
-                    }elseif($row[6] == 'Remarque mineur'){
-                    echo "<td style=\"background :yellowgreen;\">{$row[6]}</td>";
+                if($row["design"] == 'Non-effectif'){
+                echo "<td style=\"background :red;\">".$row["design"]."</td>";
+                    } elseif($row["design"] == 'Remarque majeur'){
+                    echo "<td style=\"background :orange;\">".$row["design"]."</td>";
+                    }elseif($row["design"] == 'Remarque mineur'){
+                    echo "<td style=\"background :yellowgreen;\">".$row["design"]."</td>";
                 }else{
-                        echo "<td style=\"background :green;\">{$row[6]}</td>";
+                        echo "<td style=\"background :green;\">".$row["design"]."</td>";
                 }
-                if($row[7] == 'Non-effectif'){
-                echo "<td style=\"background :red;\">{$row[7]}</td>";
-                    } elseif($row[7] == 'Remarque majeur'){
-                    echo "<td style=\"background :orange;\">{$row[7]}</td>";
-                    }elseif($row[7] == 'Remarque mineur'){
-                    echo "<td style=\"background :yellowgreen;\">{$row[7]}</td>";
+                if($row["efficacite"] == 'Non-effectif'){
+                echo "<td style=\"background :red;\">".$row["efficacite"]."</td>";
+                    } elseif($row["efficacite"] == 'Remarque majeur'){
+                    echo "<td style=\"background :orange;\">".$row["efficacite"]."</td>";
+                    }elseif($row["efficacite"] == 'Remarque mineur'){
+                    echo "<td style=\"background :yellowgreen;\">".$row["efficacite"]."</td>";
                 }else{
-                        echo "<td style=\"background :green;\">{$row[7]}</td>";
+                        echo "<td style=\"background :green;\">{$row["efficacite"]}</td>";
                 }
-                echo"<td>{$row[8]}</td>
-                <td>{$row[9]}</td>
-                <td><a href='supprimer.php?idl=$row[0]' class='bouton bouton-supprimer' onclick='return confirmation();'>supprimer</a></td>
+                echo"<td>".$row["categorie"]."</td>
+                <td>".$row["commentaires"]."</td>
+                <td><a href='supprimer.php?idl=".$row['id']."'>Supprimer</a></td>
                 </tr>";
+                
             }
-            echo "</table>";
             ?>
-            </div>
+            </table>
+                <input type="submit" name="delete" id="delete" value="supprime la selection">
+                </form>
+            </div> 
     </main>
    </body>
 </html>

@@ -106,7 +106,8 @@ main{
 
 .barre_doutil{
     border-color: #FFFFFF;
-    
+    display: flex;
+    justify-content: space-between;
 }
 
 table{
@@ -118,7 +119,9 @@ table tr td form input{
     height: 40px;
 }
 
-
+.tableau table tr td select{
+    height: 44px;
+}
 
 .barre_doutil button{
     width : 150px;
@@ -129,13 +132,23 @@ table tr td form input{
     padding-left: 20px;
 }
 
-.categorie_1{
-    background-color: red;
-    
+.tableau{
+    display: flex;
 }
 
-nav{
+nav ul{
     display: flex;
     justify-content: space-between;
     justify-content: flex-end;
+}
+
+.tabeau{
+    display: flex;
+    justify-content: space-between;
+}
+
+.tab{
+    display: flex;
+    justify-content: center;
+    justify-content: space-between;
 }
