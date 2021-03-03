@@ -4,13 +4,13 @@
     
   //PARTIE 1: créer un code aléatoires à 5 chiffres, lorsque l'utilisateur entre l'adresse correcte qui existe déjà à BDD, il remplace le nouveau code.
   //Si l'utilisateur entre un compte qui n'existe pas ou qui n'a pas la syntaxe correcte, l'erreur sera signalée  
-    /*
+    
         if(isset($_GET['section'])){
           $section =htmlspecialchars($_GET['section']);
         }else{
-          $section =""
+          $section ="";
         }
-    */
+    
         if(isset($_POST['recup_submit'],$_POST['recup_mail'])) {
                  if(!empty($_POST['recup_mail'])) {
                     $recup_mail = htmlspecialchars($_POST['recup_mail']);
@@ -55,7 +55,7 @@
         $header.='Content-Transfer-Encoding: 8bit';
 
         $mail = mail($recup_mail, $subject, $message, $header);
-      //  header("Location: http://localhost/project_L3AN/page%20accueil/oublie_mdp.php?section=code")
+        /* header("Location: http://localhost/project_L3AN/page%20accueil/oublie_mdp.php?section=code"); */
  
 
 
@@ -70,10 +70,30 @@
                     $error = "Veuillez entrer votre adresse mail";
                 }
         }
+
+        //PARTIE 3:
+    if(isset($_POST['verif_submit'],$_POST['verif_code'])) {
+     if(!empty($_POST['verif_code'])) {
+      $verif_code = htmlspecialchars($_POST['verif_code']);
+      $verif_req = $bdd->prepare('SELECT email FROM utilisateur WHERE email = ? AND code = ?');
+      $verif_req->execute(array($_SESSION['recup_mail'],$verif_code));
+      $verif_req = $verif_req->rowCount();
+
+      if($verif_req == 1) {
+         $up_req = $bdd->prepare('delete from utilisateur where gmail = ?');
+         $up_req->execute(array($_SESSION['recup_mail']));
+         header('Location: http://localhost/project_L3AN/page%20accueil/change_mdp.php');
+      } else { 
+         $error = "Code invalide";
+      }
+   } else {
+      $error = "Veuillez entrer votre code de confirmation";
+   }
+}
+
          require('form_oublie_mdp.php');
 
-    //Envoie d'un code par mail
-    //BDD: 
+     
 
 
  ?>
