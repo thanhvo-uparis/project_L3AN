@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:500');
+
+@font-face{
+    font-family : Times-New-Roman;
+    src:url(times-roman/Times-New-Roman.otf);
+}
+
+*{
+    font-family: Times-New-Roman;
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    background: rgb(234, 252, 255);
+}
+
+/* HEADER */
+
+header {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(140, 209, 209);
+
+}
+
+header, li, a, button {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: #edf0f1;
+    text-decoration: none;
+    
+}
+
+header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 30px 10%;
+}
+
+.logo {
+    cursor: none;
+    margin-right: auto;
+    float: left;
+    width: 200px;
+    height: 35px;
+    margin-left: -100px;
+    margin-top: 0px;
+}
+
+.nav_links {
+    list-style: none;
+    margin-block: auto;
+}
+
+.nav_links li {
+    display: inline-block;
+    padding: 0px 20px;
+}
+
+.nav_links li a {
+    transition: all 0.3s ease 0s;
+    margin-left: auto;
+}
+
+.nav_links li a:hover {
+    color: green;
+
+}
+
+.button {
+    padding: 9px 25px;
+    background-color: rgb(0, 136, 169,1);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+}
+
+.button:hover {
+    background-color: rgb(19, 164, 201);
+}
+
+/*MAIN */
+main{
+    clear: both
+}
+
+.filtre{
+    margin-top: 10px;
+    background: white;
+    float: left;
+    width: 200px;
+    height: 760px;
+    padding-left: 21px;
+}
+
+.filtre ol li{
+    list-style: none;
+    padding-bottom: 10px;
+}
+
+
+
+.barre_doutil table tr th{
+    padding-left:15px;
+}
+
+.barre_doutil{
+    border-color: #FFFFFF;
+    
+}
+
+table{
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    border: 20px;
+    border-collapse: collapse;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 0 20px rgb(0, 0, 0, 0.5);
+
+}
+
+table thead{
+    background-color: white;
+    text-align: center;
+    border-collapse: collapse;
+    border-radius: 12px 12px 0 0;
+}
+
+table td {
+    padding: 12px 15px;
+}
+
+table tr {
+    border-bottom: 1px solid;
+}
+
+table tr:nth-of-type(even){
+    background-color: #f3f3f3;
+}
+
+table tr:last-of-type{
+    border-bottom: 2px solid black;
+}
+
+.barre_doutil button{
+    width : 150px;
+    height: 40px;
+}
+
+.barre_doutil{
+    padding-left: 20px;
+}
+
+.tableau{
+    display: flex;
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+    justify-content: flex-end;
+}
