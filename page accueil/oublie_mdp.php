@@ -60,7 +60,7 @@
         $header.='Content-Transfer-Encoding: 8bit';
 
         $mail = mail($recup_mail, $subject, $message, $header);
-        /* header("Location: http://localhost/project_L3AN/page%20accueil/oublie_mdp.php?section=code"); */
+        header("Location: http://localhost/project_L3AN/page%20accueil/change_mdp.php?section=code");   //il nous envoye le mail ET met tout de suite sur la page change_mdp pour mettre le code reçu.
  
 
 
@@ -76,27 +76,42 @@
                 }
         }
 
-        //PARTIE 3:
-    if(isset($_POST['verif_submit'],$_POST['verif_code'])) {
-     if(!empty($_POST['verif_code'])) {
-      $verif_code = htmlspecialchars($_POST['verif_code']);
+        //PARTIE 3: Vérifier le code dans le champ.
+        // Et vérifier 2 nouveaux mots de passe saisis par l'utilisateur.
+  /*
+    if(isset($_POST['verif_submit'],$_POST['verif_code'])){
+     if(!empty($_POST['verif_code'])) {   //si le champ n'est pas vide.
+      $verif_code = htmlspecialchars($_POST['verif_code']);   //
       $verif_req = $bdd->prepare('SELECT email FROM utilisateur WHERE email = ? AND code = ?');
-      $verif_req->execute(array($_SESSION['recup_mail'],$verif_code));
+      $verif_req->execute(array($_SESSION['recup_mail'],$verif_code));     //Vérifier si l'e-mail et le code sont correctement saisis.
       $verif_req = $verif_req->rowCount();
 
-      if($verif_req == 1) {
-         $up_req = $bdd->prepare('delete from utilisateur where gmail = ?');
+      if($verif_req == 1) {   //vérification.
+         $up_req = $bdd->prepare('delete from utilisateur where gmail = ?');  //supprimer cet champ à la BDD??
          $up_req->execute(array($_SESSION['recup_mail']));
-         header('Location: http://localhost/project_L3AN/page%20accueil/change_mdp.php');
+         header("Location: http://localhost/project_L3AN/page%20accueil/change_mdp.php?section=changemdp");    //->redirection à la page change_mdp.php pour changer le mot de passe.
       } else { 
-         $error = "Code invalide";
+         $error = "Code invalide";  //si l'utilisateur n'a pas saisi le bon code.
       }
    } else {
-      $error = "Veuillez entrer votre code de confirmation";
+      $error = "Veuillez entrer votre code de confirmation";    //si le champ ne contient pas le code de confirmation->il nous donne $error.
    }
 }
 
-         //require('form_oublie_mdp.php');
+  */
+
+    //video 34'19
+      if(isset($_POST['verif_submit'],$_POST['verif_code'])){
+        if(!empty($_POST['verif_code'])){
+
+
+        }else{
+          $error = "Vuillez entre le code";
+        }
+
+      }
+
+     //PARTIE 4: 
 
      
 

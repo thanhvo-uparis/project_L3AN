@@ -1,6 +1,9 @@
-<?php
+
+
+	<?php
+
    include('oublie_mdp.php');
-?>
+    ?>
 
       <div class="" >
 	<div class="">
@@ -11,25 +14,26 @@
 		<span></span>
 	</div>
 	
-<form action="oublie_mdp.php" class="">
+<form class="">
 	   <h4 class="title-element">Récupération de mot de passe</h4>
 <?php if($section == 'code') { ?>
 
 Un code de vérification vous a été envoyé par mail: <?= $_SESSION['recup_mail'] ?>
-<br/>
+<br /><br />
+<form method="post" class="">
 
+   <input type="text" placeholder="Code de vérification" name="verif_code"/><br/>   <!-- Saisir le code de vérification qui a reçu par mail. -->
+   <button type="submit" name="verif_submit">valider</button>
+ </form>
+ 
+
+<?php } elseif($section == "changemdp") { ?>
+
+Nouveau mot de passe pour <?= $_SESSION['recup_mail'] ?><br>
 <form method="post">
-   <input type="text" placeholder="Code de vérification" name="verif_code"/><br/>
-   <input type="submit" value="Valider" name="verif_submit"/>
-</form>
-
-<?php } else if($section == "changemdp") { ?>
-
-Nouveau mot de passe pour <?= $_SESSION['recup_mail'] ?>
-<form method="post">
-   <input type="password" placeholder="Nouveau mot de passe" name="change_mdp"/><br/>
-   <input type="password" placeholder="Confirmation du mot de passe" name="change_mdpc"/><br/>
-   <input type="submit" value="Valider" name="change_submit"/>
+   <input type="password" placeholder="Nouveau mot de passe" name="change_mdp"/><br/>        <!-- Saisir un nouveau mot de passe -->
+   <input type="password" placeholder="Confirmation du mot de passe" name="change_mdpc"/><br/>   <!-- Confirmer un nouveau mot de passe -->
+   <button type="submit" value="Valider" name="change_submit">valider</button>
 </form>
 
 <?php } else { ?>
@@ -44,5 +48,7 @@ Nouveau mot de passe pour <?= $_SESSION['recup_mail'] ?>
 </form>>
 	
 </div>
+
+
 
 

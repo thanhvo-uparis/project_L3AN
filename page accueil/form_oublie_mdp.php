@@ -4,9 +4,11 @@
 	<title>récupération du mot de passe </title>
 </head>
 <body>
-	
+	    <?php
+	    include('oublie_mdp.php');
+	    ?>
 		<h2>récupération du mot de passe</h2>
-		<form method="post" action="oublie_mdp.php">
+		<form method="post" >
 			<div>
 				<label for="email"><a href="">Votre Email</a></label>
 				<input type="email" name="recup_mail" placeholder="entrez votre adresse email">
@@ -15,6 +17,8 @@
             <?php if(isset($error)) { echo '<span style="color:red">'.$error.'</span>'; } else { echo ""; } ?>
 
 		</form>	
+		
+
         
 </body>
 </html>
