@@ -5,7 +5,7 @@
   //PARTIE 1: créer un code aléatoires à 5 chiffres, lorsque l'utilisateur entre l'adresse correcte qui existe déjà à BDD, il remplace le nouveau code.
   //Si l'utilisateur entre un compte qui n'existe pas ou qui n'a pas la syntaxe correcte, l'erreur sera signalée  
     
-        if(isset($_GET['section'])){
+        if(isset($_GET['section'])){   //initialisation $_GET['section'], contrôle toujours ce qui rentre par l'url
           $section =htmlspecialchars($_GET['section']);
         }else{
           $section ="";
@@ -17,9 +17,9 @@
                     if(filter_var($recup_mail,FILTER_VALIDATE_EMAIL)) {
                       $mailexist = $bdd->prepare('select email from utilisateur where email=?');  //vérifier que l'utilisateur existe si un adresse email exist
                       $mailexist->execute(array($recup_mail));  //mail que on a reçu
-                      $mailexist = $mailexist->rowCount();  //compter le nombre de rangées 
+                      $mailexist_count = $mailexist->rowCount();  //compter le nombre de rangées 
 
-                      if($mailexist == 1){           //faire un test si un mail est déjà exist sur BDD? 
+                      if($mailexist_count == 1){           //faire un test si un mail est déjà exist sur BDD? 
                          $_SESSION['recup_mail'] = $recup_mail;  //stockage du mail dans $_SESSION['recup_mail']
 
                            //fonction: créer automatique un code aléatoires
@@ -47,8 +47,13 @@
                         }
 
       //PARTIE 2: Envoie d'un code par mail
+        //Redirection vers la page d'entrée du code $GET['section']='code' ??
+        //Check code, si le code exact, redirection vers la page de changement de mdp change_mdp.php. $_GET['section']='mdpform'
+        //Si les deux mots de passe correspondent -> hashage en sha1() et enregistrement dans la BDD
+        //chú ý: href='...c_mdp.php?section=code&code=".$recup_code." ' nhờ đoạn code này mà sau khi click vào đường dẫn trong mail -> chuyển trực tiếp tới page change_mdp.php với email= email do người dùng nhập vào.
+
         $subject = "Récupération du mot de passe";
-        $message = "Voici le code pour la réinitialisation du mot de passe: $recup_code";
+        $message = "Cliquez <a href='http://localhost/project_L3AN/page%20accueil/change_mdp.php?section=code&code=".$recup_code." '>ici</a> Voici le code pour la réinitialisation du mot de passe: $recup_code";         
         $header = "MIME-Version: 1.0\r\n"; 
         $header.= 'From: "nopreply@mazars.fr"<support@mazars.fr>'."\n"; 
         $header.= 'Content-type: text/html; cahset="uft-8"'."\n";
@@ -91,7 +96,7 @@
    }
 }
 
-         require('form_oublie_mdp.php');
+         //require('form_oublie_mdp.php');
 
      
 

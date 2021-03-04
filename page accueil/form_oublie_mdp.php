@@ -6,7 +6,7 @@
 <body>
 	
 		<h2>récupération du mot de passe</h2>
-		<form method="post">
+		<form method="post" action="oublie_mdp.php">
 			<div>
 				<label for="email"><a href="">Votre Email</a></label>
 				<input type="email" name="recup_mail" placeholder="entrez votre adresse email">
