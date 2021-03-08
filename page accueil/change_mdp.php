@@ -1,6 +1,4 @@
-
-
-	<?php
+<?php
 
    include('oublie_mdp.php');
     ?>
@@ -14,7 +12,7 @@
 		<span></span>
 	</div>
 	
-<form class="">
+
 	   <h4 class="title-element">Récupération de mot de passe</h4>
 <?php if($section == 'code') { ?>
 
@@ -23,11 +21,12 @@ Un code de vérification vous a été envoyé par mail: <?= $_SESSION['recup_mai
 <form method="post" class="">
 
    <input type="text" placeholder="Code de vérification" name="verif_code"/><br/>   <!-- Saisir le code de vérification qui a reçu par mail. -->
-   <button type="submit" name="verif_submit">valider</button>
- </form>
- 
+   <button type="submit" value="Valider" name="verif_submit">valider</button>
 
-<?php } elseif($section == "changemdp") { ?>
+
+ </form>  
+
+<?php } else if($section == "changemdp") { ?>
 
 Nouveau mot de passe pour <?= $_SESSION['recup_mail'] ?><br>
 <form method="post">
@@ -36,19 +35,6 @@ Nouveau mot de passe pour <?= $_SESSION['recup_mail'] ?><br>
    <button type="submit" value="Valider" name="change_submit">valider</button>
 </form>
 
-<?php } else { ?>
-<form method="post">
-   <input type="email" placeholder="Votre adresse mail" name="recup_mail"/><br/>
-   <input type="submit" value="Valider" name="recup_submit"/>
-</form>
-
 <?php } ?>
 
 <?php if(isset($error)) { echo '<span style="color:red">'.$error.'</span>'; } else { echo ""; } ?>
-</form>>
-	
-</div>
-
-
-
-

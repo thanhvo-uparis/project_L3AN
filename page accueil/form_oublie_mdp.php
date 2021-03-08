@@ -16,9 +16,6 @@
 			</div>
             <?php if(isset($error)) { echo '<span style="color:red">'.$error.'</span>'; } else { echo ""; } ?>
 
-		</form>	
-		
-
-        
+		</form>	      
 </body>
 </html>

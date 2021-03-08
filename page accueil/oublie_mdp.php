@@ -1,6 +1,6 @@
 <?php
     session_start();  // pour utiliser $_SESSION
-    $bdd = new PDO("mysql:host=localhost;dbname=bdd_projet-l3an1", "root", ""); //Su dung cette requette thay vi requette nay: $bdd = mysqli_connect("localhost", "root", "", "bdd_projet-l3an1");
+    $bdd = new PDO("mysql:host=localhost;dbname=bdd_projet-l3an1", "root", "");
     
   //PARTIE 1: créer un code aléatoires à 5 chiffres, lorsque l'utilisateur entre l'adresse correcte qui existe déjà à BDD, il remplace le nouveau code.
   //Si l'utilisateur entre un compte qui n'existe pas ou qui n'a pas la syntaxe correcte, l'erreur sera signalée  
@@ -10,9 +10,11 @@
         }else{
           $section ="";
         }
-    
+        
         if(isset($_POST['recup_submit'],$_POST['recup_mail'])) {
+
                  if(!empty($_POST['recup_mail'])) {
+
                     $recup_mail = htmlspecialchars($_POST['recup_mail']);
                     if(filter_var($recup_mail,FILTER_VALIDATE_EMAIL)) {
                       $mailexist = $bdd->prepare('select email from utilisateur where email=?');  //vérifier que l'utilisateur existe si un adresse email exist
@@ -78,16 +80,15 @@
 
         //PARTIE 3: Vérifier le code dans le champ.
         // Et vérifier 2 nouveaux mots de passe saisis par l'utilisateur.
-  /*
+  
     if(isset($_POST['verif_submit'],$_POST['verif_code'])){
      if(!empty($_POST['verif_code'])) {   //si le champ n'est pas vide.
       $verif_code = htmlspecialchars($_POST['verif_code']);   //
       $verif_req = $bdd->prepare('SELECT email FROM utilisateur WHERE email = ? AND code = ?');
       $verif_req->execute(array($_SESSION['recup_mail'],$verif_code));     //Vérifier si l'e-mail et le code sont correctement saisis.
       $verif_req = $verif_req->rowCount();
-
       if($verif_req == 1) {   //vérification.
-         $up_req = $bdd->prepare('delete from utilisateur where gmail = ?');  //supprimer cet champ à la BDD??
+         $up_req = $bdd->prepare('delete from utilisateur where email = ?');  //supprimer cet champ à la BDD??
          $up_req->execute(array($_SESSION['recup_mail']));
          header("Location: http://localhost/project_L3AN/page%20accueil/change_mdp.php?section=changemdp");    //->redirection à la page change_mdp.php pour changer le mot de passe.
       } else { 
@@ -97,25 +98,8 @@
       $error = "Veuillez entrer votre code de confirmation";    //si le champ ne contient pas le code de confirmation->il nous donne $error.
    }
 }
-
-  */
-
-    //video 34'19
-      if(isset($_POST['verif_submit'],$_POST['verif_code'])){
-        if(!empty($_POST['verif_code'])){
-
-
-        }else{
-          $error = "Vuillez entre le code";
-        }
-
-      }
-
+  
+  
      //PARTIE 4: 
 
-     
-
-
  ?>
-
-
