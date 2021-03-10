@@ -98,8 +98,38 @@
       $error = "Veuillez entrer votre code de confirmation";    //si le champ ne contient pas le code de confirmation->il nous donne $error.
    }
 }
+        if(isset($_POST['change_submit'])) {
+   if(isset($_POST['change_mdp'],$_POST['change_mdpc'])) {
+      $verif_confirme = $bdd->prepare('SELECT email FROM utilisateur WHERE email = ?');
+      $verif_confirme->execute(array($_SESSION['recup_mail']));
+      $verif_confirme = $verif_confirme->fetch();
+      $verif_confirme = $verif_confirme['confirme'];
+      if($verif_confirme == 1) {
+         $mdp = htmlspecialchars($_POST['change_mdp']);
+         $mdpc = htmlspecialchars($_POST['change_mdpc']);
+         if(!empty($mdp) AND !empty($mdpc)) {
+            if($mdp == $mdpc) {
+               $mdp = sha1($mdp);
+               $ins_mdp = $bdd->prepare('UPDATE utilisateur SET mot_de_passe = ? WHERE email = ?');
+               var_dump($mdp,$_SESSION['recup_mail']);die;
+               $ins_mdp->execute(array($mdp,$_SESSION['recup_mail']));
+             // $del_req = $bdd->prepare('DELETE FROM utilisateur WHERE email = ?');
+             // $del_req->execute(array($_SESSION['recup_mail']));
+               header('Location:http://localhost/trang_chu/');
+            } else {
+               $error = "Vos mots de passes ne correspondent pas";
+            }
+         } else {
+            $error = "Veuillez remplir tous les champs";
+         }
+      } 
+   } 
+ }
+
+
   
   
      //PARTIE 4: 
+      
 
  ?>

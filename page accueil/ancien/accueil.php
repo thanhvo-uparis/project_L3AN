@@ -8,7 +8,7 @@
      
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-     <link rel="stylesheet" href="style.css">  
+     <link rel="stylesheet" href="assets/style.css">  
 </head>
   <body>
       <div class="container-fluid">
@@ -31,9 +31,8 @@
                                 </label>
                             </div>
                             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-
+                            <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
                             </form>
-                            <button type="submit" class="btn btn-primary">Oublie la mot de passe?</button>
                     </div>
                     
                    
@@ -51,17 +50,12 @@
 </html>
 <?php
   require_once "login.php";
-/* if(isset($_POST['email'], $_POST['mot_de_passe'])){
-     $stmt = $bdd->prepare('select mot_de_passe from utilisateur where email = ?');
-     $stmt->execute($_POST['email']);
+if(isset($_POST['email'], $_POST['mot_de_passe'])){
+     $stmt = $bdd->prepage('select mot_de_passe from utilisateur where email = ?');
+     $stmt->execute([$_POST['email']]);
      $mot_de_passe = $stmt->fetchColumn();
- }if(mysqli_num_rows($rs)>0){
-           header("Location:http://localhost/project_L3AN/bootstrap-5.0.0-beta2-examples/dashboard/ ");
- }else{
-   echo "that bai";
-  // require_once 'http://localhost/project_L3AN/trang_chu/accueil.php';
- }
- */    
-?>
+     echo "$mot_de_passe";
+   } 
 
+  ?>
 	 

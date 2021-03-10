@@ -1,0 +1,4 @@
+INSERT INTO utilisateur VALUES ("thanhvo.uparis@gmail.com", "thanh", "vo", 076844515, "junior", "mdp", 1212)
+
+on viens de terminer la page d'accueil et la page de connexion, et on a fait le dessin de ces pages mais pas complètement terminé.
+perso, j'ai rejoint avec KALI pour développer la page activité 

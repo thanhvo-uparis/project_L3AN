@@ -1,0 +1,63 @@
+.logo{
+     min-width:200px;  /* kích thước nhỏ nhất 200px */
+     height: 80px;
+     object-fit: cover;  /* ảnh ko bị vỡ */
+     
+
+
+}
+.navbar-nav .nav-item .nav-link{
+    color: black;
+}
+.navbar-nav .nav-item:hover .nav-link{
+    color: green;
+    border-bottom: 2px solid green;
+}
+.bg{
+    height: 800px;
+    object-fit: cover;
+}
+.bg-login{
+    width: 100%;
+    height: 800px;
+    object-fit: cover;
+}
+.boxbg{
+    position:relative;
+}
+.boxlogin{
+    position: absolute;
+    top:30%;
+    left: 30%;
+
+}
+
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+  }
+  .form-signin .checkbox {
+    font-weight: 400;
+  }
+  .form-signin .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+  }
+  .form-signin .form-control:focus {
+    z-index: 2;
+  }
+  .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }

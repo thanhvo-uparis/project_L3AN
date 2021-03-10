@@ -13,8 +13,6 @@
       header("Location: document.php");
    }
    else{
-       
-       echo "<h2>vous n'etes pas reussi à enregistrementt<h2>";
     
     } 
    

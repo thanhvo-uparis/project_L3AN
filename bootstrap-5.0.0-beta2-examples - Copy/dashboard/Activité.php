@@ -4,9 +4,15 @@ $connect = mysqli_connect("localhost", "root", "", "bdd_projet-l3an1");
 
 $query = "SELECT statut,COUNT(*) FROM controle GROUP BY statut";
 $query1 = "SELECT email_proprietaire,COUNT(*) FROM mission GROUP BY email_proprietaire";
+/* $query2= '(SELECT email_proprietaire, COUNT(*) from mission, controle
+               where mission.mission_id = controle.mission_id AND controle.email_utilisateur_realise_par= mission.emai_proprietaire ';
+               */
+$query2="((SELECT mission.email_proprietaire, COUNT(*) from mission, controle where mission.mission_id = controle.mission_id AND controle.email_utilisateur_realise_par= mission.email_proprietaire) UNION ALL (SELECT mission.email_proprietaire, COUNT(*) from mission, controle where mission.mission_id = controle.mission_id AND controle.email_utilisateur_revu_par= mission.email_proprietaire) UNION ALL (SELECT mission.email_proprietaire, COUNT(*) from mission, controle where mission.mission_id = controle.mission_id AND controle.email_utilisateur_sign_off= mission.email_proprietaire) )";
 
 $result = mysqli_query($connect,$query);
 $result1 = mysqli_query($connect,$query1);
+$result2 =mysqli_query($connect,$query2);
+//$bdd = new PDO("mysql:host=localhost;dbname=bdd_projet-l3an1", "root", "");
 
 ?>
 
@@ -160,12 +166,13 @@ $result1 = mysqli_query($connect,$query1);
             </tr>
           </thead>
           <?php 
-            while ($row = mysqli_fetch_array($result1))
+            while ($row = mysqli_fetch_array($result2))
             {
           ?>
           <tbody>
             <tr>
               <td><?php echo $row["email_proprietaire"]; ?></td>
+
               <td><?php echo $row["COUNT(*)"]; ?></td>
                    
             </tr> 
