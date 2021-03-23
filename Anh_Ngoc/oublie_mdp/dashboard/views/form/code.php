@@ -1,26 +1,10 @@
-<?php
-
-$connect = mysqli_connect("localhost", "root", "", "bdd_projet-l3an1");
-
-$query = "SELECT statut,COUNT(*) FROM controle GROUP BY statut";
-$query1 = "SELECT email_proprietaire,COUNT(*) FROM mission GROUP BY email_proprietaire";
-
-$result = mysqli_query($connect,$query);
-$result1 = mysqli_query($connect,$query1);
-
-?>
-
-
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Page Activité</title>
+    <title>Confirmer le code de vérification</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/dashboard/">
-
-    
-
     <!-- Bootstrap core CSS -->
 <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -39,8 +23,6 @@ $result1 = mysqli_query($connect,$query1);
         }
       }
     </style>
-
-    
     <!-- Custom styles for this template -->
     <link href="Activité.css" rel="stylesheet">
   </head>
@@ -59,7 +41,6 @@ $result1 = mysqli_query($connect,$query1);
   </ul>
 </header>
 
-
 <div class="container-fluid">
   <div class="row">
     <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
@@ -71,24 +52,24 @@ $result1 = mysqli_query($connect,$query1);
             Tableau de bord
           </a>
             <ul class="dropdown-menu" aria-labelledby="Activité">
-              <li><a class="dropdown-item" href="#">Activité</a></li>
-              <li><a class="dropdown-item" href="#">Mon activité</a></li>
+              <li><a class="dropdown-item" href="#">Home</a></li>
+              <li><a class="dropdown-item" href="#">Se Connecter</a></li>
             </ul>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">
             <span data-feather="users"></span>
-            Équipe
+            Votre profil 
           </a>
             <ul class="dropdown-menu" aria-labelledby="Équipe">
-              <li><a class="dropdown-item" href="#">Mes missions</a></li>
+              <li><a class="dropdown-item" href="#">Information personnelle</a></li>
               <li><a class="dropdown-item" href="#">Carnet d'addesses</a></li>
             </ul>
           </li>
           <li class="nav-item">
             <a class="nav-link active" href="#">
               <span data-feather="file-text"></span>
-              Documentation
+              Mot de passe
             </a>
           </li>
           <li class="nav-item dropdown">
@@ -107,7 +88,7 @@ $result1 = mysqli_query($connect,$query1);
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
+        <h1 class="h2">Récupération de mot de passe</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group me-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -120,65 +101,18 @@ $result1 = mysqli_query($connect,$query1);
         </div>
       </div>
 
+      <p>Changement de la mot de passe de <?=$_SESSION['recup_mail'] ?></p>
+      <p>Un code de vérification vous a été envoyé par e-mail: <?=$_SESSION['recup_mail'] ?></p>
+<form method="post" class="">
+   <input type="text" placeholder="Saisissez le code" name="verif_code"/><br/>
+   <button type="submit" name="verif_submit">Valider</button>
+</form>  
+
       <canvas class="my-4 w-100" id="myChart" width="300" height="80"></canvas>
 
-      <h2>ITGC</h2>
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th>Statut</th>
-              <th>Valeur</th>
-
-            </tr>
-          </thead>
-          <?php 
-            while ($row = mysqli_fetch_array($result))
-            {
-          ?>
-          <tbody>
-            <tr>
-              <td><?php echo $row["statut"]; ?></td>
-              <td><?php echo $row["COUNT(*)"]; ?></td>
-                   
-            </tr> 
-          </tbody>
-          <?php 
-            }
-          ?> 
-        </table>
-      </div>
-
-      <h2>Controls répartition</h2>
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th>Responsable</th>
-              <th>Nombre de taches</th>
-
-            </tr>
-          </thead>
-          <?php 
-            while ($row = mysqli_fetch_array($result1))
-            {
-          ?>
-          <tbody>
-            <tr>
-              <td><?php echo $row["email_proprietaire"]; ?></td>
-              <td><?php echo $row["COUNT(*)"]; ?></td>
-                   
-            </tr> 
-          </tbody>
-          <?php 
-            }
-          ?> 
-        </table>
-      </div>
     </main>
   </div>
 </div>
-
 
     <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
 
