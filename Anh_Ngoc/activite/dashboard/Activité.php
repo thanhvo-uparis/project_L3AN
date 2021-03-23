@@ -165,7 +165,7 @@ while($row = mysqli_fetch_array($result2)){
           </a>
             <ul class="dropdown-menu" aria-labelledby="Activité">
               <li><a class="dropdown-item active" href="#">Activité</a></li>
-              <li><a class="dropdown-item" href="#">Mon activité</a></li>
+              <li><a class="dropdown-item" href="mon_active.php">Mon activité</a></li>
             </ul>
           </li>
           <li class="nav-item dropdown">
