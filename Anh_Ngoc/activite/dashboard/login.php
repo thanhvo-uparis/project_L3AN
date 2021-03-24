@@ -1,7 +1,7 @@
 <?php   
 include 'application/bdd_connection.php';
 $error = "";
-   if(isset($_POST['connect'])){
+   if(isset($_POST['pdo'])){
       $Email = $_POST['Email'];
       $Password = $_POST['Mdp'];
       $Password = md5(md5(md5(md5($Password))));
@@ -22,7 +22,7 @@ $error = "";
               $_SESSION['admin_email']=$admin['email'];
               $_SESSION['admin_privilege']=$admin['role_mission'];
               
-              header('Location:Activité.php');
+              header('Location:ActivitéPerso.php');
           }
   }
   //notifcations

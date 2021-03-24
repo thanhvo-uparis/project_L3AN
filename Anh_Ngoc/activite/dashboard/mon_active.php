@@ -1,10 +1,11 @@
 <?php
-
+session_start();
 //Tableaux
 $connect = mysqli_connect("localhost", "root", "", "bdd_projet-l3an1");
-if (isset($_SESSION['Email']) && $_SESSION['Email'] != '')
+$_SESSION['admin_email']="chouat.david@mazars.fr";
+if (isset($_SESSION['admin_email']) && $_SESSION['admin_email'] != '')
 {
-    $all_missions = mysqli_query($connect, 'SELECT * FROM mission WHERE email_proprietaire="' . $_SESSION['Email'] . '"');
+    $all_missions = mysqli_query($connect, 'SELECT * FROM mission WHERE email_proprietaire="' . $_SESSION['admin_email'] . '"');
 ?>
 	<h2>Your mission</h2>
   <div class="table-responsive">
@@ -36,7 +37,7 @@ if (isset($_SESSION['Email']) && $_SESSION['Email'] != '')
 }
 else
 {
-    header('Location:login.php');
+    header('Location:activite.php');
 }
 
 ?>

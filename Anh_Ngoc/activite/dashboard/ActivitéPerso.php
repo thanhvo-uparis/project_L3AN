@@ -1,49 +1,19 @@
 <?php
-
-include 'application/bdd_connection.php';
+session_start();
 if(isset($_SESSION['admin_email']) && $_SESSION['admin_email'] !=''){
 
+  $pdo = new PDO
+  (
+      //serveur
+      'mysql:host=localhost;dbname=bdd_projet-l3an1;charset=UTF8',
+      'root',
+      ''
+  );
 
+  $query='SELECT utilisateur.nom, utilisateur.prenom, mission.mission_nom FROM equipe INNER JOIN mission ON equipe.id_mission = mission.mission_id INNER JOIN utilisateur ON equipe.email_utilisateur = utilisateur.email ORDER BY mission_nom';
 
-//Tableaux
-
-$connect = mysqli_connect("localhost", "root", "", "bdd_projet-l3an1");
-
-$query = "SELECT * FROM mission, equipe WHERE mission_id = id_mission ";
-$query1 = "SELECT * FROM utilisateur";
-$query2 = "SELECT COUNT(*) FROM controle WHERE email_utilisateur_realise_par = email_utilisateur_revu_par OR email_utlisateur_sign_off";
-
-$result = mysqli_query($connect,$query);
-$result1 = mysqli_query($connect,$query1);
-$result2 = mysqli_query($connect,$query2);
-
-
-//Graphique
-
-$dbhost = 'localhost';
-$dbname = 'bdd_projet-l3an1';
-$dbuser = 'root';
-$dbpass = '';
-
-try{
-
-    $dbcon = new PDO("mysql:host={$dbhost};dbname={$dbname}",$dbuser,$dbpass);
-    $dbcon->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-
-}catch(PDOException $ex){
-
-    die($ex->getMessage());
-}
-$stmt = $dbcon->prepare("SELECT statut,COUNT(statut) AS `count` FROM controle GROUP BY statut");
-$stmt->execute();
-$count = ['COUNT(statut)'];
-$json = [];
-$json1 = [];
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    extract($row);
-    $json[] = $statut;
-    $json1[] = $count;
-}
+  $resultSet = $pdo->query($query);
+  $equipes = $resultSet->fetchAll(); 
 
 ?>
 
@@ -158,98 +128,33 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
         </div>
       </div>
-
-
-                          <!-- Fonctions Bouttons Graphiques -->
+                       <!-- Fonctions Bouttons Graphiques -->
         <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-
-            <script>
-                $(document).ready(function(){
-                  $('#ITGC').click(function(){
-                    $('canvas').toggle('fast');
-                    });
-                  });
-
-          </script>
-                           <!-- Graphique Statut -->
-       <div id="GraphITGC" class="col-md-6 offset-md-3 my-5">
-         <div class="card">
-            <div class="card-body pb-0 text-center"><h2 class="Chart-title">ITGC</h2><img src="bootstrap-icons-1.4.0/aspect-ratio-fill.svg"><hr></div>           
-            <canvas style="display:none" class="ChartStatut" id="myChart"></canvas>
-        </div>
-       </div>
        
-       <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-       <script type="text/javascript">
-           var ctx = document.getElementById('myChart').getContext('2d');
-           var chart = new Chart(ctx, {
-
-           // The type of chart we want to create
-           type: 'bar',
-
-            // The data for our dataset
-           data: {
-              labels: <?php echo json_encode($json); ?>,
-              datasets: [{
-                 label: 'Statut',
-                 backgroundColor: 'rgb(50, 138, 236)',
-                 borderColor: '#000000',
-                 borderWidth: 2,
-                 data: <?php echo json_encode($json1); ?>,
-              }],
-
-
-            },
-
-            // Configuration options go here
-            options: {
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    beginAtZero: true
-                  }
-                }]
-              },
-              legend: {
-                display: true
-              }
-            }
-            });
-       </script>
-      
-       
-
-      <!--
-      <canvas class="my-4 w-100" id="myChart" width="700" height="80" style="display:block; height:60; width: 80px;"></canvas>
-      -->
-      
-                           <!-- Tableau Statut -->
-
-      <h2>Mes missions</h2>
-      <div class="table-responsive">
+        <div class="table-responsive">
         <table class="table table-striped table-sm">
-          <thead>
+          <thead style="background-color: aqua;">
             <tr>
-              <th>#</th>
-
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Nom de la mission</th>
             </tr>
           </thead>
-          <?php 
-            while ($row = mysqli_fetch_array($result))
-            {
-          ?>
           <tbody>
+          <tbody>
+            <?php foreach($missions as $mission){ ?>
             <tr>
-              <td><?php echo $row["mission_nom"]; ?></td>
-                   
-            </tr> 
+              <th colspan="11"><?php echo $mission['mission_nom']; ?></th>
+            </tr>
+            <?php foreach($equipes as $equipe){ ?>
+             <?php if($equipe['mission_nom'] == $mission['mission_nom']){ ?>
+            <tr>
+              <td><?php echo $equipe['mission_nom']; ?></td>
+            </tr>
+            <?php } } } ?>
           </tbody>
-          <?php 
-            }
-          ?> 
         </table>
       </div>
-
 
     </main>
   </div>

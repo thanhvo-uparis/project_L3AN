@@ -1,43 +1,27 @@
 <?php
-
+session_start();
 
 //Tableaux
 
-$connect = mysqli_connect("localhost", "root", "", "bdd_projet-l3an1");
+include 'application/bdd_connection.php';
+if(isset($_SESSION['admin_email']) && $_SESSION['admin_email'] !=''){
 
-$query = "SELECT statut,COUNT(*) FROM controle GROUP BY statut";
+//intégration de la connexion de la base de données dans le fichier principale mesmissions.php
+    $pdo = new PDO
+    (
+        //serveur
+        'mysql:host=localhost;dbname=bdd_projet-l3an1;charset=UTF8',
+        'root',
+        ''
+    );
 
-$result = mysqli_query($connect,$query);
 
 
 
 
 //Graphique ITGC
 
-$dbhost = 'localhost';
-$dbname = 'bdd_projet-l3an1';
-$dbuser = 'root';
-$dbpass = '';
 
-try{
-
-    $dbcon = new PDO("mysql:host={$dbhost};dbname={$dbname}",$dbuser,$dbpass);
-    $dbcon->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-
-}catch(PDOException $ex){
-
-    die($ex->getMessage());
-}
-$stmt = $dbcon->prepare("SELECT statut,COUNT(statut) AS `count` FROM controle GROUP BY statut");
-$stmt->execute();
-$count = ['COUNT(statut)'];
-$json = [];
-$json1 = [];
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    extract($row);
-    $json[] = $statut;
-    $json1[] = $count;
-}
 
 //Graphique CR
 
@@ -135,7 +119,7 @@ while($row = mysqli_fetch_array($result2)){
 
     
     <!-- Custom styles for this template -->
-    <link href="Activité.css" rel="stylesheet">
+    <link href="activite.css" rel="stylesheet">
   </head>
   <body>
                    <!--barre barre de navigation-->
@@ -165,7 +149,7 @@ while($row = mysqli_fetch_array($result2)){
           </a>
             <ul class="dropdown-menu" aria-labelledby="Activité">
               <li><a class="dropdown-item active" href="#">Activité</a></li>
-              <li><a class="dropdown-item" href="mon_active.php">Mon activité</a></li>
+              <li><a class="dropdown-item"  href="ActivitéPerso.php">Mon activité</a></li>
             </ul>
           </li>
           <li class="nav-item dropdown">
