@@ -1,3 +1,6 @@
+<?php
+	    require_once ('oublie_mdp.php');
+	    ?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -100,7 +103,7 @@
           </button>
         </div>
       </div>
-
+    
       <form method="post" >
 			<div>
 				<label for="email">Email</label>

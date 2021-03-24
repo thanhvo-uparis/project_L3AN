@@ -108,25 +108,25 @@ require_once ('views/menu.php');
           </button>
         </div>
       </div>
-
+      <?php
+         switch ($section) {
+         case 'code':
+        require_once ('views/form/code.php');
+        break;
+         case 'change_password':
+        require_once ('views/form/change_password.php');
+        break;
+        default:
+        break;
+       }
+        echo (isset($error)) ? '<span style="color:red">' . $error . '</span>' : "";
+          ?>
       <canvas class="my-4 w-100" id="myChart" width="300" height="80"></canvas>
 
     </main>
   </div>
 </div>
-<?php
-switch ($section) {
-    case 'code':
-        require_once ('views/form/code.php');
-        break;
-    case 'change_password':
-        require_once ('views/form/change_password.php');
-        break;
-    default:
-        break;
-}
-echo (isset($error)) ? '<span style="color:red">' . $error . '</span>' : "";
-?>
+
 
     <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
 

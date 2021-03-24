@@ -1,7 +1,7 @@
 <?php
 session_start(); // pour utiliser $_SESSION
 $bdd = new PDO("mysql:host=localhost;dbname=bdd_projet-l3an1", "root", "");
-define('HOME_URL', 'http://localhost/project_L3AN/bootstrap/dashboard');
+define('HOME_URL', 'http://localhost/project_L3AN/Anh_Ngoc/oublie_mdp/dashboard/');
 // lấy giá trị section trên URL
 $section = (isset($_GET['section'])) ? htmlspecialchars($_GET['section']) : "";
 if (isset($_POST['recup_submit'])) {
@@ -106,7 +106,7 @@ if (isset($_POST['change_submit'])) {
                                 $mdp,
                                 $_SESSION['recup_mail']
                             ));
-                            header('Location:http://localhost/project_L3AN/bootstrap/dashboard');
+                            header('Location:http://localhost/project_L3AN/Anh_Ngoc/oublie_mdp/dashboard/form_oublie_mdp.php');
                         } else {
                             $error = "Votre mot de passe ne correspond pas ";
                         }
