@@ -124,60 +124,53 @@ td.statut select {
     display: none;
 }
 
-
-
 td.niv_risque.active span {
-  display: none;
+    display: none;
 }
 
 td.niv_risque.active select {
-  display: block;
+    display: block;
 }
 
 td.niv_risque select {
-  display: none;
+    display: none;
 }
 
-
 td.role.active span {
-  display: none;
+    display: none;
 }
 
 td.role.active select {
-  display: block;
+    display: block;
 }
 
 td.role select {
-  display: none;
+    display: none;
 }
 
-
 td.design.active span {
-  display: none;
+    display: none;
 }
 
 td.design.active select {
-  display: block;
+    display: block;
 }
 
 td.design select {
-  display: none;
+    display: none;
 }
 
-
 td.efficacite.active span {
-  display: none;
+    display: none;
 }
 
 td.efficacite.active select {
-  display: block;
+    display: block;
 }
 
 td.efficacite select {
-  display: none;
+    display: none;
 }
-
-
 
 td.commentaire.active span {
     display: none;
@@ -188,5 +181,51 @@ td.commentaire.active .textarea-commentaire {
 }
 
 td.commentaire .textarea-commentaire {
+    display: none;
+}
+
+.commentaire-div .textarea {
+    display: none;
+}
+
+.commentaire-div.show .textarea {
+    display: block;
+}
+
+.commentaire-div.show p {
+    display: none;
+}
+
+.notif-read{
+  background : #ccc;
+}
+
+.nav-link{
+  position: relative;
+}
+
+#notifs-count{
+  position: absolute;
+  top : 0;
+  right : 0;
+  background: white;
+  color :black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height : 15px;
+  width : 15px;
+  border-radius: 50%;
+}
+
+li.role.active span {
+    display: none;
+}
+
+li.role.active select {
+    display: block;
+}
+
+li.role select {
     display: none;
 }

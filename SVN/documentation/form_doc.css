@@ -1,0 +1,43 @@
+@font-face{
+    font-family : Times-New-Roman;
+    src:url(times-roman/Times-New-Roman.otf);
+}
+
+*{
+    font-family: Times-New-Roman;
+    padding: 0;
+    margin: 0;
+}
+
+
+.form-group{
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+}
+
+h1{
+    text-decoration: underline;
+    text-align: center;
+}
+
+.panel-body{
+    border: 20px;
+    width: 600px;
+    border-color: black;
+    text-align: center;
+    
+}
+
+
+.form-group{
+    margin: 10px;
+    text-align: center;
+    width: 600px;
+}
+
+.form-group label{
+    width: 300px;
+    height: 20px;
+}
+

@@ -1,62 +1,8 @@
-<?php
-include 'application/bdd_connection.php';
-if(isset($_SESSION['admin_email']) && $_SESSION['admin_email'] !=''){
-
-$query='SELECT * FROM mission';
-$resultSet = $pdo->query($query);
-$missions = $resultSet->fetchAll();
-
-    function concernedByMission($pdo,  $email){
-        $query=$pdo->prepare("SELECT t1.mission_nom, t1.mission_id FROM mission as t1 
-        INNER JOIN equipe as t2 ON t1.mission_id = t2.id_mission 
-        WHERE t2.email_utilisateur =?");
-        $query->execute([$email]);
-        $results=$query->fetchAll();
-        return $results;
-      }
-
-     
-      function concernedByCategorie($pdo, $email){
-        $query=$pdo->prepare("SELECT t3.nom_categorie FROM `equipe` as t1 
-        INNER JOIN categorie_general as t3 
-        INNER JOIN categorie_mission as t4 on t3.id=t4.id_categorie AND t1.id_mission=t4.id_mission WHERE t1.email_utilisateur  = ? 
-        GROUP BY t3.nom_categorie" );
-        $query->execute([$email]);
-        $results=$query->fetchAll();
-        return $results;
-      }
-
-      function nameControlOfMission($pdo, $email){
-        $query=$pdo->prepare("SELECT t2.nom_du_controle, t2.id FROM equipe as t1 
-        INNER JOIN controle as t2 on t1.id_mission=t2.mission_id 
-        WHERE t1.email_utilisateur = ? ");
-        $query->execute([$email]);
-        $results=mysqli_query($pdo, $query);
-        $row = mysqli_fetch_assoc($results);
-        return $row;
-      }
-
-      function concernedByCollaborator($pdo, $email){
-         $query=$pdo->prepare("SELECT t1.mission_nom, t1.mission_id FROM mission as t1 
-         INNER JOIN equipe as t2 ON t1.mission_id = t2.id_mission 
-         WHERE t2.email_utilisateur =?");
-         $query->execute([$email]);
-         $results=$query->fetchAll();
-         return $results;
-      }
- /*
-      $query='SELECT t3.nom_categorie FROM `equipe` as t1 INNER JOIN categorie_general as t3 INNER JOIN categorie_mission as t4 on t3.id=t4.id_categorie AND t1.id_mission=t4.id_mission WHERE t1.email_utilisateur = "arbouche.anas@mazars.fr"'
-      $resultSet1 = $pdo->query($query);
-      $controles1 = $resultSet1->fetchAll();
-*/
-?>
-
-
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Page Activité</title>
+    <title>Page ActivitéPerso</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/dashboard/">
 
@@ -83,7 +29,7 @@ $missions = $resultSet->fetchAll();
 
     
     <!-- Custom styles for this template -->
-    <link href="ActivitéPerso.css" rel="stylesheet">
+    <link href="ActivitéPersoTest.css" rel="stylesheet">
   </head>
   <body>
     
@@ -103,7 +49,7 @@ $missions = $resultSet->fetchAll();
 
 <div class="container-fluid">
   <div class="row">
-  <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
       <div class="position-sticky pt-3">
         <ul class="nav flex-column">
         <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -163,68 +109,6 @@ $missions = $resultSet->fetchAll();
           </div>
         </div>
         </ul>
-                       
-          <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-            <img src="bootstrap-icons-1.4.0/briefcase.svg">
-              <p style="color: white; font-size: 15px">Mes Missions</p>
-              <?php 
-              $all_missions = concernedByMission($pdo, $_SESSION['admin_email']);
-              ?>
-              <select name="mission" class="form-control form-control-white w-100 filter-select filter-by-mission">
-                <option>Selectionner une mission </option>
-                <?php foreach($all_missions as $mission){ ?>
-                  //verifie si l'utilisateur fait bien parti de la mission grace a la fonction concernedByMission()
-                  <option value="mission-<?php echo $mission['mission_id']; ?>"><?php echo $mission['mission_nom']; ?></option>
-                <?php } ?>
-              </select>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-            <img src="bootstrap-icons-1.4.0/bar-chart-steps.svg">
-            <p style="color: white; font-size: 15px">Mes Catégories</p>
-              <?php 
-              $all_categories = concernedByCategorie($pdo, $_SESSION['admin_email']);
-              ?>
-              <select name="mission" class="form-control form-control-white w-100 filter-select filter-by-category">
-                <option>Selectionner une categorie </option>
-                <?php foreach($all_categories as $category){ ?>
-                  //verifie si l'utilisateur fait bien parti de la mission grace a la fonction concernedByMission()
-                  <option value="category-<?php echo $category['id']; ?>"><?php echo $category['nom_categorie']; ?></option>
-                <?php } ?>
-              </select>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-            <img src="bootstrap-icons-1.4.0/briefcase.svg">
-              <p style="color: white; font-size: 15px">Collaborateurs</p>
-              <?php 
-              $all_collaborators = concernedByCollaborator($pdo, $_SESSION['admin_email']);
-              ?>
-              <select name="mission" class="form-control form-control-white w-100 filter-select filter-by-mission">
-                <option>Selectionner une mission </option>
-                <?php foreach($all_collaborators as $collaborator){ ?>
-                  //verifie si l'utilisateur fait bien parti de la mission grace a la fonction concernedByMission()
-                  <option value="collaborator-<?php echo $collaborator['mission_id']; ?>"><?php echo $collaborator['mission_nom']; ?></option>
-                <?php } ?>
-              </select>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-            <img src="bootstrap-icons-1.4.0/briefcase.svg">
-              <p style="color: white; font-size: 15px">Recherche par nom du controle</p>
-              <input type="text" placeholder="Nom du controle">
-            </a>
-          </li>
-
-        </ul>
 
 
       </div>
@@ -235,56 +119,55 @@ $missions = $resultSet->fetchAll();
         <h1 class="h2">Dashboard</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group me-2">
-            <button id="ITGC" type="button" class="btn btn-sm btn-outline-secondary"><?php echo $_SESSION['admin_email']; ?></button>
+            <button id="ITGC" type="button" class="btn btn-sm btn-outline-secondary">NACHET Haroune</button>
           </div>
-
-
-           
+          
 
         </div>
       </div>
      
-    
-                                 <!-- Tableau missions -->
+               <!-- Tableau missions -->
+                             
+      <h2>Mes missions</h2>
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>Nom</th>
 
+            </tr>
+          </thead>
+
+ 
+          <tbody>
+            <tr>
+              <td style="font-weight: bold; color: rgb(39, 134, 212);">LCL</td>
+            </tr> 
+            <tr>
+                <td style="font-weight: bold; color: rgb(37, 219, 31);">BNP Paribas</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; color: red;">Socitete Generale</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; color: rgb(219, 125, 37);">Attijariwafa Bank</td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
 
                                  <!-- Graphique Statut -->
-
-
-
-       <div id="Graph" class="col-md-6 offset-md-3 my-5">
-
-         <div  class="card" id="graphcard">  
-                <div class="card-body">
-<?php
-function getDatas($mission_id) {
-  $labels = array('SG','BNP','AW');
-  return array('labels' => $labels, 'values' => array(55,12,3));
-}
-?>
-                <?php foreach($all_missions as $mission) : ?>
-                <?php
-                
-                $datas = getDatas($mission['mission_id']);
-                $labels =$datas['labels']; 
-                $values =$datas['values'];
-                ?>
-                <div id="mission-<?php echo $mission['mission_id'] ?>" class="chart-item" data-labels="<?php echo htmlentities(json_encode($labels)) ?>"  data-values="<?php echo htmlentities(json_encode($values)) ?>" style="display:none">
-                <div class="card-body pb-0 text-center"><h2 class="Chart-title"><?php echo $mission['mission_nom'] ?></h2><img src="bootstrap-icons-1.4.0/aspect-ratio-fill.svg"><hr></div>
-                <canvas class="ChartStatut" id="myChart-mission-<?php echo $mission['mission_id'] ?>"></canvas>
-               
-                </div>
-                <?php endforeach; ?>
-            </div>
-
-          </div>
+       <div id="GraphITGC" class="col-md-6 offset-md-3 my-5">
+         <div class="card">
+            <div class="card-body pb-0 text-center"><h2 class="Chart-title">ITGC</h2><img src="bootstrap-icons-1.4.0/aspect-ratio-fill.svg"><hr></div>           
+            <canvas class="ChartStatut" id="myChart"></canvas>
+        </div>
+       </div>
        
-          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      
        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
        <script type="text/javascript">
-   function viewChart(chart_id, labels, values){
-    var ctx = document.getElementById(chart_id).getContext('2d');
+           var ctx = document.getElementById('myChart').getContext('2d');
            var chart = new Chart(ctx, {
 
            // The type of chart we want to create
@@ -292,12 +175,12 @@ function getDatas($mission_id) {
 
             // The data for our dataset
            data: {
-              labels: labels,
+              labels: ['LCL','SG','BNP','AW'] ,
               datasets: [{
                  label: 'Statut',
                  backgroundColor: ['rgb(178, 34, 34)','rgb(210, 105, 30)','rgb(50, 138, 236)' ,'rgb(34, 139, 34)'],
                  borderWidth: 1,
-                 data: values, 
+                 data: [5,9,14,23], 
               }],
 
 
@@ -324,25 +207,96 @@ function getDatas($mission_id) {
             }
             });
 
-            
-   }
-
-           
-   jQuery(document).ready(function($){
-         $('.filter-by-mission').on('change', function(){
-var mission_id = $(this).val();
-$('.chart-item').hide();
-$('#' + mission_id).show();
-var labels = $('#'+ mission_id).data('labels');
-var values = $('#'+ mission_id).data('values');
-viewChart('myChart-' + mission_id, labels, values);
-
-         });
-       });
        </script>
 
-             
-       </div>
+                     <!--Graphique Bar-->
+    <div class="col-md-6 offset-md-3 my-5">
+        <div class="card">
+          <div class="card-body pb-0 text-center"><h2 class="Chart-title">Taches par Missions</h2><img src="bootstrap-icons-1.4.0/aspect-ratio-fill.svg"><hr></div> 
+            <canvas id="myChart2"></canvas>
+        </div>
+    </div>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+                   
+
+    <script type="text/javascript">
+         var ctx = document.getElementById('myChart2').getContext('2d');
+    var chart = new Chart(ctx, {
+    // Le type de Graphique 
+    type: 'bar',
+
+    // Les données du graphique
+    data: {
+        labels: ['LCL','SG','BNP','AW'],
+        datasets: [{
+            label: 'ITGC',
+            backgroundColor: ['rgb(50, 138, 236)','rgb(540, 18, 236)','rgb(504, 38, 26)'],
+            borderColor: '#000000',
+            borderWidth: 2,
+            hoverBackgroundColor: 'rgb(55, 38, 26)',
+            maxBarThickness: 8,
+            minBarLength: 2,
+            data: [5,9,14,23],
+        }]
+    },
+
+    // Configuration des options 
+    options: {
+        
+        legend: {
+            display: true,
+            position: 'top',
+            labels: {
+                boxWidth: 10
+            },
+            
+        },
+        scales: {
+            xAxes: [{
+                stacked: true
+            }],
+
+            yAxes: [{
+                ticks: {
+                beginAtZero: true
+       
+          }
+        }]
+      },
+    }
+    });
+    </script>
+      
+       
+      
+                           <!-- Tableau Statut 
+
+      <h2>ITGC</h2>
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>Statut</th>
+              <th>Valeur</th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td><?php echo $row["statut"]; ?></td>
+              <td><?php echo $row["COUNT(*)"]; ?></td>
+                   
+            </tr> 
+          </tbody>
+   
+        </table>
+      </div>
+-->
+
 
     </main>
   </div>
@@ -356,11 +310,3 @@ viewChart('myChart-' + mission_id, labels, values);
       </script><script src="GraphStatut.php"></script>
   </body>
 </html>
-
-
-
-<?php
-
-}else{
-  header('Location:login.php');
-} ?>

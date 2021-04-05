@@ -1,67 +1,44 @@
 <?php
-//realise la connection avec la base de donnee et verifie si l'utilisateur est bien connecte
 include 'application/bdd_connection.php';
 if(isset($_SESSION['admin_email']) && $_SESSION['admin_email'] !=''){
 
-//requete SQL qui vat permettre lors de son execution d'avoir les informations necessaires pour l'affichage des controles
-$query='SELECT controle.id as id, controle.mission_id, controle.categorie_id,controle.nom_du_controle,controle.deadline,controle.email_utilisateur_realise_par, controle.email_utilisateur_revu_par,controle.email_utilisateur_sign_off, controle.statut,controle.niveau_de_risque,controle.design,controle.efficacite, controle.lu,controle.lu_statut, mission.mission_id,mission.mission_nom, mission.email_proprietaire,categorie_general.id as id_categorie,categorie_general.nom_categorie FROM controle INNER JOIN mission ON controle.mission_id = mission.mission_id INNER JOIN categorie_general ON controle.categorie_id = categorie_general.id ORDER BY controle.mission_id'; //requete SQL
-$resultSet = $pdo->query($query);
-$controles = $resultSet->fetchAll();
 
-//affichage des categorie generale
-$query='SELECT * FROM categorie_general'; //requete SQL
-$resultSet = $pdo->query($query);
-$categories = $resultSet->fetchAll();
+$query='SELECT * FROM controle INNER JOIN mission ON controle.mission_id = mission.mission_id INNER JOIN categorie ON controle.categorie_id = categorie.categorie_id ORDER BY controle.mission_id';
+  $resultSet = $pdo->query($query);
+  $controles = $resultSet->fetchAll();
 
-//affichage des categorie en fonction de leurs asscoiation a une mission specifique
-$query='SELECT * FROM categorie_mission'; //requete SQL
-$resultSet = $pdo->query($query);
-$categories_missions = $resultSet->fetchAll();
+  $query='SELECT * FROM categorie';
+  $resultSet = $pdo->query($query);
+  $categories = $resultSet->fetchAll();
 
-//requete SQL qui vat permettre d'avoir les differentes mission lors de son execution.
-$query='SELECT * FROM mission'; //requete SQL
-   $resultSet = $pdo->query($query);
-   $missions = $resultSet->fetchAll();
+  $query='SELECT * FROM mission';
+  $resultSet = $pdo->query($query);
+  $missions = $resultSet->fetchAll();
   
-  //requete SQL qui vat agir afin de determiner qu'elle colonne du tableau en fonction des choix de l'utilisateur
-  $query=$pdo->prepare("SELECT * FROM set_colonne WHERE id = ?"); //requete SQL
+  $query=$pdo->prepare("SELECT * FROM set_colonne WHERE id = ?");
     $query->execute([1]);
     $colonnes=$query->fetch();
 
-  //fonction qui permet a partir d'un email de retourner le nom et prenom de l'utilisateur
   function getNameByEmail($pdo, $email){
-    $query=$pdo->prepare("SELECT * FROM utilisateur WHERE email = ?"); //requete SQL
+    $query=$pdo->prepare("SELECT * FROM utilisateur WHERE email = ?");
     $query->execute([$email]);
     $utilisateur=$query->fetch();
     return $utilisateur['nom']." ".$utilisateur['prenom'];
 }     
-
-//requete SQL qui vat permettre d'ajouter une categorie generale
 if(isset($_POST['ajouter_cat'])){
-  $query=$pdo->prepare("insert into categorie_general (nom_categorie) values(?)"); //requete SQL
-  $query->execute([$_POST['categorie_nom']]);
+  $query=$pdo->prepare("insert into categorie (id_mission,categorie_nom) values(?,?)");
+  $query->execute([$_POST['mission'],$_POST['categorie_nom']]);
   }
 
-  //requete SQL qui vat permettre d'associer une categorie des categories generale et de les associes a des missions.
-  if(isset($_POST['ajouter_categorie'])){
-    $query=$pdo->prepare("insert into categorie_mission (id_categorie, id_mission) values(?,?)"); //requete SQL
-    $query->execute([$_POST['categorie'],$_POST['mission']]);
-  }
-  
-  //permet de supprimer une categorie ainsi que tout les controle qui lui sont associer dans une mission donne par l'utilisateur
   if(isset($_POST['supprimer_cat'])){
-    $query=$pdo->prepare("delete from categorie_mission where id_mission= ? and id_categorie = ?"); //requete SQL
-    $query->execute([$_POST['mission'],$_POST['categorie']]);
-
-    $query=$pdo->prepare("delete from controle where mission_id = ? AND categorie_id = ?"); //requete SQL
-    $query->execute([$_POST['mission'],$_POST['categorie']]);
-
+    $query=$pdo->prepare("delete from categorie where id_mission= ? and categorie_nom = ?");
+    $query->execute([$_POST['mission'],$_POST['categorie_nom']]);
   }
 
   
-  //fonction qui vat permettre de retourner a partir d'une requete SQL de retourner le dernier commentaires mis en place par un des utilisateurs du controle.
+
   function getLastComment($pdo, $id){
-    $query=$pdo->prepare("SELECT * FROM commentaires WHERE id_controle=? ORDER BY id DESC"); //requete SQL
+    $query=$pdo->prepare("SELECT * FROM commentaires WHERE id_controle=? ORDER BY id DESC");
     $query->execute([$id]);
     $last_commentaire=$query->fetch();
     if($last_commentaire){
@@ -71,27 +48,12 @@ if(isset($_POST['ajouter_cat'])){
     }
     
   }
-
-  //fonction qui vat permmettre a partir d'une requete SQL de retourner les mission dans lequel l'utilisateur a ete identifier.
-  function concernedByMission($pdo, $id, $email){
-    $query=$pdo->prepare("SELECT * FROM equipe WHERE id_mission = ? AND email_utilisateur =?"); //requete SQL
-    $query->execute([$id,$email]);
-    $results=$query->fetch();
-    if($results){
-      return true;
-    }else{
-      return false;
-    }
-  }
-
-  //fonction qui vat permettre a partir d'une requete SQL de retourner le role d'une personne dans une mission, et ainsi traité les privilége par mission
-  function getRole($pdo,$mission){
-    $query=$pdo->prepare("SELECT * FROM equipe WHERE id_mission = ? AND email_utilisateur = ?"); //requete SQL
-    $query->execute([$mission,$_SESSION['admin_email']]);
-    $role=$query->fetch();
-    return $role['role'];
-  }
+  //login
+  //notifications
+  //checkbox suppression controle
 ?>
+
+
 
 <!doctype html>
 <html lang="fr">
@@ -103,13 +65,9 @@ if(isset($_POST['ajouter_cat'])){
     
 
     <!-- Bootstrap core CSS -->
-    <link href="bootstrap.min.css" rel="stylesheet">
-    
+<link href="bootstrap.min.css" rel="stylesheet">
 
     <style>
-      a{
-      text-decoration: none !important;
-    }
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -131,27 +89,23 @@ if(isset($_POST['ajouter_cat'])){
   </head>
   <body>
     
-<header class="navbar navbar-info sticky-top bg-info flex-md-nowrap p-0 shadow">
-<a class="navbar-info col-md-3 col-lg-2 me-0 px-3" href="#"><img style="height : 2àpx; width:150px;" src="mazars-logo.png"></a>
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Mazars</a>
   <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <input class="form-control form-control-dark w-100 filter-input" type="text" placeholder="Recherche" name="recherche"  aria-label="Search">
   <li class="nav-item dropdown">
-    <a class="nav-link" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false"><span id="notifs-count"></span><img src="bootstrap-icons-1.4.0/bell.svg">   </a>
-    <ul id="notifs-wrapper" class="dropdown-menu" aria-labelledby="Notfications">
+    <a class="nav-link" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false"><img src="bootstrap-icons-1.4.0/bell.svg">   </a>
+    <ul class="dropdown-menu" aria-labelledby="Notfications">
 <?php
       include './notif/action.php';
       foreach ($notifsStatut as $notifStatut) {
-         $classNotifs = '';
-        if($notifStatut['lu_statut']){
-          $classNotifs = 'notif-read';
-        } 
 ?>
-        <li class="<?php echo $classNotifs; ?>"><a class="dropdown-item-left" href="#"><small><i><i><br>Le statut à changé en <?php echo $notifStatut['statut']; ?> pour : <?php echo $notifStatut['nom_du_controle']; ?></small></a></li>
+        <li><a class="dropdown-item" href="#"><small><i><i><br>Le statut à changé pour <?php echo $notifStatut['statut']; ?> pour : <?php echo $notifStatut['nom_du_controle']; ?></small></a></li>
 <?php
-        //$query=$pdo->prepare("UPDATE controle set lu_statut = ? where id= ?");
-       // $query->execute([1, $notifStatut['id']]);
+        $query=$pdo->prepare("UPDATE controle set set_statut = ? where id= ?");
+        $query->execute([0, $notifStatut['id']]);
       }
       foreach ($notifs as $notif) {
 
@@ -160,54 +114,44 @@ if(isset($_POST['ajouter_cat'])){
           $classNotifs = 'notif-read';
         } 
 ?>
-        <li class="<?php echo $classNotifs; ?>"><a class="dropdown-item-left" href="#"><small ><i><?php echo $notif['deadline']; ?>, <i><br>Attention la deadline pour : <?php echo $notif['nom_du_controle']; ?></small><strong><small> arrive bientôt a échéance.</small></strong></a></li>
+        <li><a class="dropdown-item" href="#"><small class="<?php echo $classNotifs; ?>"><i><?php echo $notif['deadline']; ?>, <i><br>Attention la deadline pour : <?php echo $notif['nom_du_controle']; ?></small></a></li>
 <?php
-        //$query=$pdo->prepare("UPDATE controle set lu = ? where id= ?");
-        //$query->execute([1, $notif['id']]);
+        $query=$pdo->prepare("UPDATE controle set lu = ? where id= ?");
+        $query->execute([1, $notif['id']]);
       }
 ?>
 
   
     </ul>
   </li>
-  <li>
-    <div class="dropdown">
-    <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-      <strong><?php echo $_SESSION['admin_nom']; ?></strong>
-    </a>
-    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-      <li><a class="dropdown-item" href="#">Paramètres du comptes</a></li>
-      <li><a class="dropdown-item" href="profil.php">Profil</a></li>
-      <li><a class="dropdown-item" href="nous_contacter.php">Nous contacter</a></li>
-      <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item" href="logout.php">Déconnexion</a></li>
-    </ul>
-  </div>
-</li>
+  <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="logout.php">Deconnexion</a>
+    </li>
   </ul>
 </header>
 
 <div class="container-fluid">
-<div class="row">
+  <div class="row">
     <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
       <div class="position-sticky pt-3">
         <ul class="nav flex-column">
           <div class="accordion accordion-flush" id="accordionFlushExample">
-            <div class="accordion-item">
+            <div class="accordion-item nav-item">
               <h2 class="accordion-header" id="flush-headingOne">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                  <img src="bootstrap-icons-1.4.0/graph-up.svg">Tableau de bord
+                  <img src="bootstrap-icons-1.4.0/person-lines-fill.svg"> Tableau de bord
                 </button>
               </h2>
-            </div>
+              </div>
           <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
           <div class="accordion-body">
-            <button type="button" class="btn nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="mission.php"> Activité</a></button>
-            <button type="button" class="btn nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="carnet_addresse.php"> Mon activité</a></button>
+            <button type="button" class="btn  nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="mission.php"> Activité</a></button>
+            <button type="button" class="btn  nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="carnet_addresse.php"> Mon activité</button>
           </div>
         </div>
           <div class="accordion accordion-flush" id="accordionFlushExample">
-            <div class="accordion-item disabled">
+            <div class="accordion-item nav-item">
               <h2 class="accordion-header" id="flush-headingOne">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
                   <img src="bootstrap-icons-1.4.0/person-lines-fill.svg"> Équipe
@@ -216,13 +160,13 @@ if(isset($_POST['ajouter_cat'])){
               </div>
           <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
           <div class="accordion-body">
-            <button type="button" class="btn nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="mission.php"> Mes missions</a></button>
-            <button type="button" class="btn nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="carnet_addresse.php"> Carnet d'addesses</a></button>
+            <button type="button" class="btn  nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="mission.php"> Mes missions</a></button>
+            <button type="button" class="btn  nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="carnet_addresse.php"> Carnet d'addesses</button>
           </div>
           </div>
 
           <div class="accordion accordion-flush" id="accordionFlushExample">
-            <div class="accordion-item">
+            <div class="accordion-item nav-item">
               <h2 class="accordion-header" id="flush-headingTree">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTree" aria-expanded="false" aria-controls="flush-collapseTree">
                   <img src="bootstrap-icons-1.4.0/folder-check.svg"> Documentation
@@ -231,7 +175,8 @@ if(isset($_POST['ajouter_cat'])){
               </div>
           <div id="flush-collapseTree" class="accordion-collapse collapse" aria-labelledby="flush-headingTree" data-bs-parent="#accordionFlushExample">
           <div class="accordion-body">
-            <button type="button" class="btn nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="index.php"> Mes contrôles</a></button>
+            <button type="button" class="btn  nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="index.php">Mes contrôles</a></button>
+            <button type="button" class="btn  nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="telechargement.php">Téléchargements</a></button>
           </div>
         </div>
         <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -244,8 +189,8 @@ if(isset($_POST['ajouter_cat'])){
               </div>
           <div id="flush-collapseFor" class="accordion-collapse collapse" aria-labelledby="flush-headingFor" data-bs-parent="#accordionFlushExample">
           <div class="accordion-body">
-            <button type="button" class="btn  nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="FAQ.html"> FAQ</a></button>
-            <button type="button" class="btn  nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="nous_contacter.php"> Nous contacter</a></button>
+            <button type="button" class="btn  nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="index.php">FAQ</a></button>
+            <button type="button" class="btn  nav-link"><img src="bootstrap-icons-1.4.0/folder-plus.svg"><a href="telechargement.php">Nous contacter</a></button>
           </div>
         </div>
         </ul>
@@ -267,28 +212,15 @@ if(isset($_POST['ajouter_cat'])){
             <button type="button" class="btn  nav-link" data-bs-toggle="modal" data-bs-target="#ajoutCategorie"><img src="bootstrap-icons-1.4.0/folder-plus.svg"> <small><i>Ajouter une catégorie</i></small></button>
           </li>
           <li class="nav-item">
-          <button type="button" class="btn  nav-link" data-bs-toggle="modal" data-bs-target="#ajoutermissionsCategorie"><img src="bootstrap-icons-1.4.0/folder-minus.svg"> <small><i>Associer une catégorie</i></small></button>
-          </li> 
-          <?php //gestion des privileges
-          if($_SESSION['admin_privilege'] == 'Senior Manager' || $_SESSION['admin_privilege'] == 'Associé'){ 
-          ?>
-          <li class="nav-item">
             <button type="button" class="btn  nav-link" data-bs-toggle="modal" data-bs-target="#SupCategorie"><img src="bootstrap-icons-1.4.0/folder-minus.svg"> <small><i>Supprimer une catégorie</i></small></button>
           </li>
-          <?php } ?>
           <li class="nav-item">
             <button type="button" class="btn  nav-link" id="delete-checkbox"><img src="bootstrap-icons-1.4.0/file-earmark-minus.svg"> <small><i>Supprimer les contrôles</i></small></button>
           </li> 
-          <?php //gestion des privileges
-          if($_SESSION['admin_privilege'] == 'Senior Manager' || $_SESSION['admin_privilege'] == 'Associé'){ 
-            ?>
-          <li>
-            <button type="button" class="btn nav-link" data-bs-toggle="modal" data-bs-target="#modal-colonnes">
-            <img src="bootstrap-icons-1.4.0/file-earmark-minus.svg"> <small><i>Modifier les colonnes</i></small>
-            </button>
-          <?php } ?>
-          </li>
         </ul>
+    
+
+
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
           <span>Filtres : </span>
           <a class="link-secondary" href="" aria-label="ajouter un controle">
@@ -302,11 +234,9 @@ if(isset($_POST['ajouter_cat'])){
               Par Mission : 
               <select name="mission" class="form-control form-control-white w-100 filter-select">
                 <option>Selectionner une mission :</option>
-                <?php foreach($missions as $mission){ 
-                  //verifie si l'utilisateur fait bien parti de la mission grace a la fonction concernedByMission()
-                  if(concernedByMission($pdo, $mission['mission_id'], $_SESSION['admin_email'])){?>
+                <?php foreach($missions as $mission){ ?>
                   <option value="<?php echo $mission['mission_nom']; ?>"><?php echo $mission['mission_nom']; ?></option>
-                <?php } } ?>
+                <?php } ?>
               </select>
             </a>
           </li>
@@ -317,7 +247,7 @@ if(isset($_POST['ajouter_cat'])){
               <select name="categorie" class="form-control form-control-white w-100 filter-select">
                 <option>Selectionner une categorie :</option>
                 <?php foreach($categories as $categorie){ ?>
-                  <option value="<?php echo $categorie['nom_categorie']; ?>"><?php echo $categorie['nom_categorie']; ?></option>
+                  <option value="<?php echo $categorie['categorie_nom']; ?>"><?php echo $categorie['categorie_nom']; ?></option>
                 <?php } ?>
               </select>
             </a>
@@ -343,7 +273,10 @@ if(isset($_POST['ajouter_cat'])){
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <br>
-      <!-- Modal qui vat permettre de changer les colonnes a afficher sur le tableau des controles -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-colonnes">
+           Modifier les colonnes
+      </button>
+      <!-- Modal -->
       <div class="modal fade" id="modal-colonnes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -413,12 +346,11 @@ if(isset($_POST['ajouter_cat'])){
           </div>
         </div>
       </div>
-      <div class="table-responsive-sm">
-        <table class="table table-striped table-xxl">
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
           <thead>
             <tr>
-              <th> </th>
-              <!-- verification du fait si l'utilisateur veut afficher certaines colonnes ou pas-->
+              <th>#</th>
               <?php if($colonnes['mission'] == "0"){ ?>
               <th>Mission</th>
               <?php } ?>
@@ -451,27 +383,24 @@ if(isset($_POST['ajouter_cat'])){
               <?php } ?>
             </tr>
           </thead>
-        
+           
           <tbody>
             <?php foreach($categories as $categorie){ ?>
             <tr>
-            <th colspan="11"><h5 class="my-0"><?php echo $categorie['nom_categorie']; ?></h5></th>
+              <th colspan="11"><?php echo $categorie['categorie_nom']; ?></th>
             </tr>
-            <?php 
-            foreach($controles as $controle){
-              if(($controle['categorie_id'] == $categorie['id'])){ 
-               if(concernedByMission($pdo, $controle['mission_id'], $_SESSION['admin_email'])){
-                 ?>
+            <?php foreach($controles as $controle){ 
+              if($controle['categorie_nom'] == $categorie['categorie_nom']){ ?>
            <tr>
               <td><input class="controle-checkbox" type='checkbox' data-id="<?php echo $controle['id']; ?>"></td>
               <?php if($colonnes['mission'] == "0"){ ?>
-              <td class="search-mission search-recherche"><strong><?php echo $controle['mission_nom']; ?></strong></td>
+              <td class="search-mission search-recherche"><?php echo $controle['mission_nom']; ?></td>
               <?php } ?>
               <?php if($colonnes['categorie'] == "0"){ ?>
-              <td class="search-categorie search-recherche"><?php echo $controle['nom_categorie']; ?></td>
+              <td class="search-categorie search-recherche"><?php echo $controle['categorie_nom']; ?></td>
               <?php } ?>
               <?php if($colonnes['nom_du_controle'] == "0"){ ?>
-              <td class="search-recherche"><a href="telechargement.php?id=<?php echo $controle['id']; ?>"><?php echo $controle['nom_du_controle']; ?></a></td>
+              <td class="search-recherche"><?php echo $controle['nom_du_controle']; ?></td>
               <?php } ?>
               <?php if($colonnes['deadline'] == "0"){ ?>
               <td><?php echo $controle['deadline']; ?></td>
@@ -493,7 +422,6 @@ if(isset($_POST['ajouter_cat'])){
             <?php if($colonnes['statut'] == "0"){ ?>
 
               <?php 
-              //vat traiter les couleurs des différents champs : statut, niveau de risque, design, efficacite en fonction des choix saisies
               $color_statut = "";
               if($controle["statut"] == 'Non debute'){
                 $color_statut = "red";
@@ -541,45 +469,30 @@ if(isset($_POST['ajouter_cat'])){
                 $color_efficacite = "green";
               }    
               ?>
-              <!-- gestion privilege statut -->
               <td class='statut' style="color: <?php echo $color_statut ;?>;">
-              <?php if(getRole($pdo, $controle['mission_id']) == 'Junior') {?>
               <span class='search-statut span-statut search-recherche'><?php echo $controle['statut'] ;?></span>
-              <select class='statut-select' data-id='<?php echo $controle['id'] ;?>'> 
-                    <option value='Non debute'
-                    <?php if($controle['statut'] == "Non debute"){echo 'selected="selected"';}?>>Non debute</option>
-                    <option value='Documente' <?php if($controle['statut'] == "Documente"){echo 'selected="selected"';}?>>Documente</option>
-                    <?php }elseif(getRole($pdo, $controle['mission_id']) == 'Senior') {?>
-                      <span class='search-statut span-statut search-recherche'><?php echo $controle['statut'] ;?></span>
-                      <select class='statut-select' data-id='<?php echo $controle['id'] ;?>'> 
-                        <option value='Non debute' <?php if($controle['statut'] == "Non debute"){echo 'selected="selected"';}?>>Non debute</option>
-                        <option value='Documente' <?php if($controle['statut'] == "Documente"){echo 'selected="selected"';}?>>Documente</option>
-                        <option value='Revu' <?php if($controle['statut'] == "Revu"){echo 'selected="selected"';}?>>Revu</option>
-                    <?php }else{?>
-                      <span class='search-statut span-statut search-recherche'><?php echo $controle['statut'] ;?></span>
-                        <select class='statut-select' data-id='<?php echo $controle['id'] ;?>'> 
-                            <option value='Non debute'
-                             <?php if($controle['statut'] == "Non debute"){echo 'selected="selected"';}?>>Non debute</option>
-                            <option value='Documente' <?php if($controle['statut'] == "Documente"){echo 'selected="selected"';}?>>Documente</option>
-                            <option value='Revu' <?php if($controle['statut'] == "Revu"){echo 'selected="selected"';}?>>Revu</option>
-                            <option value='Sign-off' <?php if($controle['statut'] == "Sign-off"){echo 'selected="selected"';}?>>Sign-off</option>
-                    <?php } ?>
+                    <select class='statut-select' data-id='<?php echo $controle['id'] ;?>'> 
+                    <option value='Non debute'>Non debute</option>
+                    <option value='Documente'>Documente</option>
+                    <option value='Revu'>Revu</option>
+                    <option value='Sign-off'>Sign-off</option>
                     </select>
+              
               </td>
               <?php } ?>
 
               <?php if($colonnes['niveau_de_risque'] == "0"){ ?>
-              <td rolspan='2' class='niv_risque' style="color: <?php echo $color_risque ;?>;">
+              <td class='niv_risque' style="color: <?php echo $color_risque ;?>;">
               <span class='span_niv_risque search-recherche'><?php echo $controle['niveau_de_risque'] ;?></span>
                     <select class='niv-risque-select' data-id='<?php echo $controle['id'] ;?>'> 
-                      <option value='Eleve'>Élevé</option>
-                      <option value='Moyen'>Moyen</option>
-                      <option value='Faible'>Faible</option>
+                    <option value='Eleve'>Eleve</option>
+                    <option value='Moyen'>Moyen</option>
+                    <option value='Faible'>Faible</option>
                     </select>
               </td>
               <?php } ?>
               <?php if($colonnes['design'] == "0"){ ?>
-                <td rolspan='2' class='design' style="color: <?php echo $color_design ;?>;">
+                <td class='design' style="color: <?php echo $color_design ;?>;">
               <span class='span-design search-recherche'><?php echo $controle['design'] ;?></span>
                     <select class='design-select' data-id='<?php echo $controle['id'] ;?>'> 
                     <option value='Non-effectif'>Non-effectif</option>
@@ -590,7 +503,7 @@ if(isset($_POST['ajouter_cat'])){
               </td>
               <?php } ?>
               <?php if($colonnes['efficacite'] == "0"){ ?>
-                <td rolspan='2' class='efficacite' style="color: <?php echo $color_efficacite ;?>;">
+                <td class='efficacite' style="color: <?php echo $color_efficacite ;?>;">
               <span class='span-efficacite search-recherche'><?php echo $controle['efficacite'] ;?></span>
                     <select class='efficacite-select' data-id='<?php echo $controle['id'] ;?>'> 
                     <option value='Non-effectif'>Non-effectif</option>
@@ -599,46 +512,18 @@ if(isset($_POST['ajouter_cat'])){
                     <option value='Effectif'>Effectif</option>
               <?php } ?>
               <?php if($colonnes['commentaires'] == "0"){ ?>
-              <td rolspan='2' class="popup-commentaire" data-id="<?php echo $controle['id']; ?>"><?php echo getLastComment($pdo, $controle['id']); ?></td>
+              <td><?php echo getLastComment($pdo, $controle['id']); ?></td>
               <?php } ?>
             </tr>
-            <?php } } } ?>
-            <?php }  ?>
+            <?php } } ?>
+            <?php } ?>
           </tbody>
         </table>
       </div>
     </main>
   </div>
 </div>
-
-<!-- MODAL COMMENTAIRE LISTE - AJOUT -->
-<div class="modal fade" id="modal-commentaire" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modal-nom-controle">Commentaires - nom_du_controle</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="d-flex flex-column justify-content-center"><!-- faire le design -->
-          <label for="ajout-commentaire">Ajout de commentaire</label>
-          <textarea id="ajout-commentaire"></textarea>
-          <button type="button" class="btn btn-info" id="bouton-ajout-commentaire">Ajouter</button>        
-        </div>
-
-
-        <div id="modal-liste-commentaires">
-          
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- FIN MODAL COMMENTAIRE LISTE - AJOUT -->
-<!-- Modal pour l'ajout d'une categorie -->
+<!-- Modal -->
 <div class="modal fade" id="ajoutCategorie" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -648,7 +533,18 @@ if(isset($_POST['ajouter_cat'])){
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                   
+                    <div class="col-sm-9">
+                        <label for="mission" class="form-label"><i>Qu'elle est la mission ?</i></label>
+                        <select name="mission" class="form-select">
+                        <option>Selectionner une mission :</option>
+                        <?php foreach($missions as $mission){ ?>
+                        <option value="<?php echo $mission['mission_id']; ?>"><?php echo $mission['mission_nom']; ?></option>
+                        <?php } ?>
+                        </select>
+                        <div class="invalid-feedback">
+                        Ce champ est obliagtoire.
+                        </div>
+                    </div>
                     <div class="col-sm-9">
                         <label for="categorie_nom" class="form-label">Nom de la catégorie</label>
                         <div class="input-group has-validation">
@@ -668,53 +564,6 @@ if(isset($_POST['ajouter_cat'])){
     </div>
 </div>
 
-<!-- modal pour permmetre d'associer une categorie generale a une mission propre -->
-<div class="modal fade" id="ajoutermissionsCategorie" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="index.php" method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ajout d'une catégorie</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                <div style="padding-left : 10px;" class="col-sm-11">
-                        <label for="mission" class="form-label"><i>Dans qu'elle mission ?</i></label>
-                        <select class="form-select" name="mission">
-                      <option value="" disabled hidden selected>Choisir une mission</option>
-                      <?php foreach($missions as $mission){ ?>
-                        <option value="<?php echo $mission['mission_id']; ?>"><?php echo $mission['mission_nom']; ?></option>
-                        <?php }?>
-                    </select>
-                        <div class="invalid-feedback">
-                        Ce champ est obliagtoire.
-                        </div>
-                    </div>
-
-                    <div style="padding-left : 10px;" class="col-sm-11">
-                        <label for="mission" class="form-label"><i>Qu'elle est la catégorie ?</i></label>
-                        <select class="form-select" name="categorie">
-                          <option value="" disabled hidden selected>Choisir une categories</option>
-                            <?php foreach($categories as $categorie){ ?>
-                          <option value="<?php echo $categorie['id']; ?>"><?php echo $categorie['nom_categorie']; ?></option>
-                            <?php }?>
-                        </select>
-                        <div class="invalid-feedback">
-                        Ce champ est obliagtoire.
-                        </div>
-                    </div>
-                    
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" name="ajouter_categorie">Ajouter</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- modal qui vat permmetre de supprimer une categorie et par le biais de la requete d'en haut vat aussi supprimer les controles de cette categorie -->
 <div class="modal fade" id="SupCategorie" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -726,7 +575,7 @@ if(isset($_POST['ajouter_cat'])){
                 <div class="modal-body">
                     <div class="col-sm-9">
                         <label for="mission" class="form-label"><i>Qu'elle est la mission ?</i></label>
-                        <select name="mission" id="delete-from-mission" class="form-select">
+                        <select name="mission" class="form-select">
                         <option>Selectionner une mission :</option>
                         <?php foreach($missions as $mission){ ?>
                         <option value="<?php echo $mission['mission_id']; ?>"><?php echo $mission['mission_nom']; ?></option>
@@ -737,12 +586,10 @@ if(isset($_POST['ajouter_cat'])){
                         </div>
                     </div>
                     <div class="col-sm-9">
-                        <label for="categorie" class="form-label">Nom de la catégorie</label>
+                        <label for="categorie_nom" class="form-label">Nom de la catégorie</label>
                         <div class="input-group has-validation">
                         <span class="input-group-text"><span><img src="bootstrap-icons-1.4.0/file-text.svg"></span></span>
-                        <select id="delete-categorie" class="form-control" name="categorie">
-                          <option value="" disabled hidden selected>Choisir une categorie</option>
-                        </select>
+                        <input type="text" name="categorie_nom" class="form-control" id="categorie_nom" placeholder="Nom de la catégorie" required>
                         <div class="invalid-feedback">
                         Ce champ est obliagtoire.
                         </div>
@@ -750,26 +597,30 @@ if(isset($_POST['ajouter_cat'])){
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" id="confirm_delete_categorie" class="btn btn-primary" name="supprimer_cat">Supprimer</button>
+                    <button type="submit" class="btn btn-primary" name="supprimer_cat">Supprimer</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 <footer class="my-5 pt-5 text-muted text-center text-small">
-<p>&copy;Copyright 2021 - Mazars - France Inc. &middot;</p>
-<p class="float"><a href="#">Retourner en haut</a></p>
+  <p class="mb-1">&copy; 2017–2021 MAZARS SAS</p>
+  <ul class="list-inline">
+    <li class="list-inline-item"><a href="#">Privacy</a></li>
+    <li class="list-inline-item"><a href="#">Terms</a></li>
+    <li class="list-inline-item"><a href="#">Support</a></li>
+  </ul>
 </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
         integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
         crossorigin="anonymous"></script>
-    <script src="bootstrap.bundle.min.js"></script>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
   
 <script>
 
-  // modification du statut lors d'un double click sur le champ 
+  // statut 
   var span_statut = document.querySelectorAll('.span-statut');
 
 for(var i = 0; i < span_statut.length; i++){
@@ -823,7 +674,7 @@ for(var i = 0; i < select_statut.length; i++){
 }
 // fin statut
 
-// modification du nievau de risque lors d'un double click sur le champ
+// niveau de risque 
 var span_niv_risque = document.querySelectorAll('.span_niv_risque');
 
 for(var i = 0; i < span_niv_risque.length; i++){
@@ -874,7 +725,7 @@ for(var i = 0; i < select_niv_risque.length; i++){
 }
 // fin niveau de risque
 
-// // modification du design lors d'un double click sur le champ 
+// modif design
 var span_design = document.querySelectorAll('.span-design');
 
 for(var i = 0; i < span_design.length; i++){
@@ -929,7 +780,7 @@ for(var i = 0; i < select_design.length; i++){
 //fin modif design
 
 
-// // modification du efficacite lors d'un double click sur le champ 
+// modif efficacite
 var span_efficacite = document.querySelectorAll('.span-efficacite');
 
 for(var i = 0; i < span_efficacite.length; i++){
@@ -1061,7 +912,7 @@ submit_edit_colonne.addEventListener('click', () =>{
 })
 //fin modifier colonne
 
-// filtres par select et par la barre de recherche 
+// filtres
 var filter_select = document.querySelectorAll('.filter-select');
         var filter_input = document.querySelectorAll('.filter-input');
 
@@ -1159,6 +1010,7 @@ var filter_select = document.querySelectorAll('.filter-select');
 //fin filtres
 
 // suppression controle checkbox
+
   var checkbox_all = document.querySelectorAll('.controle-checkbox');
   function id_checked() {
     var tab_id_checked = [];
@@ -1175,7 +1027,6 @@ var filter_select = document.querySelectorAll('.filter-select');
   var bouton_delete = document.getElementById('delete-checkbox');
   bouton_delete.addEventListener('click', () => {
     all_id_client_checked = id_checked();
-    // console.log(all_id_client_checked);
     $.ajax({
             url: "delete_controle.php",
             method: "POST",
@@ -1186,158 +1037,20 @@ var filter_select = document.querySelectorAll('.filter-select');
         })
   })
 
-// FIN suppression controle checkbox
-
-// au clic sur un commentaire ouvrir popup pour ajouter commentaire ou editer ou supprimer et afficher la liste des commentaires
-//on clique sur un commentaire, la popup s'ouvre !
-var collect_td_commentaire = document.querySelectorAll('.popup-commentaire');
-for(var i=0; i < collect_td_commentaire.length; i++){
- const on = collect_td_commentaire[i];
- on.addEventListener('dblclick', (e) =>{
-   td_id = e.currentTarget.getAttribute('data-id');
-   $.ajax({
-            url: "recup_controle.php",
-            method: "POST",
-            dataType: 'json',
-            data: "id=" + td_id,
-            success: function(data) {
-              var titre_controle = document.getElementById('modal-nom-controle').innerHTML = data.nom_du_controle;
-            }
-        })
 
 
-  get_commentaires(td_id)
-  // au double clic sur le commentaire il affiche la modal
-   $('#modal-commentaire').modal('show');
-   
 
- })
-}
-
-// on clique sur ajouter, on ajoute un commentaire
-var bouton_ajout_commentaire = document.getElementById('bouton-ajout-commentaire');
-bouton_ajout_commentaire.addEventListener('click', () => {
-  var textarea = document.getElementById('ajout-commentaire').value;
-  $.ajax({
-            url: "ajout_commentaires.php",
-            method: "POST",
-            data: "textarea=" + textarea + "&id=" + td_id,
-            success: function() {
-              get_commentaires(td_id);
-            }
-        })
-})
-
-function get_commentaires(id){
-  $.ajax({
-            url: "recup_commentaire.php",
-            method: "POST",
-            dataType: 'json',
-            data: "id=" + id,
-            success: function(data) {
-              var div_list_commentaire = document.getElementById('modal-liste-commentaires');
-              div_list_commentaire.innerHTML = "";
-              for (var i = 0; i < data.length; i++) {
-                div_list_commentaire.innerHTML += '<div class="commentaire-div"><p>'+data[i].date_commentaire+', '+data[i].nom+ ' '+ data[i].prenom + ' : '+ data[i].commentaire+ '</p><div class="textarea"><textarea>'+data[i].commentaire+'</textarea><button type="button" class="maj btn btn-light">Mettre a jour</button></div><button type="button" class="edit-bouton btn btn-primary" data-id="'+data[i].id+'"><img src="bootstrap-icons-1.4.0/pencil.svg"></button><button type="button" class="delete-bouton btn btn-danger" data-id="'+data[i].id+'"><img src="bootstrap-icons-1.4.0/trash.svg"></button></div>';
-              }
-
-              var collect_bouton_edit = document.querySelectorAll('.edit-bouton');
-              for(var i = 0; i < collect_bouton_edit.length; i++){
-                const on = collect_bouton_edit[i];
-                on.addEventListener('click', (e) =>{
-                  div_commentaire = on.closest('.commentaire-div');
-                  div_commentaire.classList.toggle('show');
-
-                  var id_edit = on.getAttribute('data-id');
-                  var maj = div_commentaire.querySelector('.maj');
-                  
-                  maj.addEventListener('click', () =>{
-                    div_commentaire.classList.remove('show');
-                    var textarea_value = div_commentaire.querySelector('textarea').value;
-                    $.ajax({
-                        url: "edit_commentaires.php",
-                        method: "POST",
-                        data: "id=" + id_edit + "&textarea=" + textarea_value,
-                        success: function() {
-                          get_commentaires(td_id);
-                        }
-                    })
-                  })
-                  
-                })
-              }
-
-              var collect_bouton_delete = document.querySelectorAll('.delete-bouton');
-              for(var i = 0; i < collect_bouton_delete.length; i++){
-                const on = collect_bouton_delete[i];
-                on.addEventListener('click', (e) =>{
-                  var id_delete = on.getAttribute('data-id');
-                  $.ajax({
-                        url: "delete_commentaires.php",
-                        method: "POST",
-                        data: "id=" + id_delete,
-                        success: function() {
-                          get_commentaires(td_id);
-                        }
-                    })
-                })
-
-              }
-            }
-        })
-}
-
-// generer select categorie en fonction de la mission selectionnée ! 
-var select_mission = document.getElementById('delete-from-mission');
-select_mission.addEventListener('change', (e) =>{
-  id_mission = e.currentTarget.value;
-  $.ajax({
-      url: "get_categoriefrommission.php",
-      dataType: 'json',
-      method: "POST",
-      data: "id_mission=" + id_mission,
-      success: function(data) {
-        var select_categorie = document.getElementById('delete-categorie');
-        for(var i = 0; data.length; i++){
-         select_categorie.innerHTML += '<option value="'+data[i].id_categorie+'">'+data[i].nom_categorie+'</option>';
-        // console.log(data)
-        }
-      }
-  })
-})
-// FIN generer select categorie en fonction de la mission selectionnée ! 
-// CONFIRM Delete categorie
-var bouton_confirm_delete = document.getElementById('confirm_delete_categorie');
-bouton_confirm_delete.addEventListener('click', (e) =>{
-  if (confirm("Voulez-vous vraiment supprimer ?")) {
-            // Clic sur OK
-        } else {
-            e.preventDefault();
-
-        }
-})
-var bouton_confirm_delete2 = document.getElementById('delete-checkbox');
-bouton_confirm_delete2.addEventListener('click', (e) =>{
-  if (confirm("Voulez-vous vraiment supprimer ?")) {
-            // Clic sur OK
-        } else {
-            e.preventDefault();
-
-        }
-})
-
-// FIN de confirm delete categorie
+// suppression controle checkbox
 
   </script>
   
   
     </body>
-    <script src="./notif/notif.js" type="text/javascript"></script>
 </html>
 
 
 <?php
+
 }else{
-  header('Location:login.php'); // redirection vers la page de connection si on est pas encore conneceter a l'espace.
-}
-?>
+  header('Location:login.php');
+} ?>
