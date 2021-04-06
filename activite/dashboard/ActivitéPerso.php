@@ -15,6 +15,14 @@ $missions = $resultSet->fetchAll();
         return $results;
       }
 
+      function all_NameControls($pdo, $id_mission, $email){
+        $query=$pdo->prepare("SELECT t2.nom_du_controle, t2.id FROM equipe as t1 
+        INNER JOIN controle as t2 on t1.id_mission= ? 
+        WHERE t1.email_utilisateur = ?");
+        $query->execute([$mission_id], [$email]);
+        $results=$query->fetchAll();
+        return $results;
+     }
      
       function concernedByCategorie($pdo, $email){
         $query=$pdo->prepare("SELECT t3.nom_categorie FROM `equipe` as t1 
@@ -24,16 +32,6 @@ $missions = $resultSet->fetchAll();
         $query->execute([$email]);
         $results=$query->fetchAll();
         return $results;
-      }
-
-      function nameControlOfMission($pdo, $email){
-        $query=$pdo->prepare("SELECT t2.nom_du_controle, t2.id FROM equipe as t1 
-        INNER JOIN controle as t2 on t1.id_mission=t2.mission_id 
-        WHERE t1.email_utilisateur = ? ");
-        $query->execute([$email]);
-        $results=mysqli_query($pdo, $query);
-        $row = mysqli_fetch_assoc($results);
-        return $row;
       }
 
       function concernedByCollaborator($pdo, $email){
