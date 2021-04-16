@@ -1,7 +1,7 @@
 # project_L3AN 
 Mise en place d'une plateforme web permettant d'enregistrer automatiquement sur un Sharepoint et suivre une mission
 
-#Objectifs :
+# Objectifs :
 
 *Créer un onglet dans Excel permettant de mettre un état d'avancement :
 
@@ -9,7 +9,7 @@ Réalisé par : “Rempli automatiquement avec le nom de l'utilisateur”
 
 (option disponible seulement si le document a été “réalisé par”)Revu par : “Rempli automatiquement avec le nom de l'utilisateur” (option disponible seulement si le document a été “revu par”) Revue finale par : “Rempli automatiquement avec le nom de l'utilisateur”
 
-#Requis
+# Requis
 
 *Pour chaque document, utilisation du template préfait
 
