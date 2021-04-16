@@ -22,7 +22,7 @@ $error = "";
               $_SESSION['admin_email']=$admin['email'];
               $_SESSION['admin_privilege']=$admin['role_mission'];
               
-              header('Location:index.php');
+              header('Location:documentation.php');
           }
   }
   //notifcations
@@ -79,9 +79,12 @@ $error = "";
     <input type="password" id="password" name="Mdp" class="form-control" placeholder="Mot de passe" aria-label="Mot de passe">
   </div>
   <div class="col">
-         <button type="submit" name="connect" class="btn btn-primary btn-block">Connexion</button>
+         <button type="submit" name="connect" class="btn btn-primary btn-block">Connexion</button><br>
+         <a href="mdp_oublier.php">
+       Mot de passe oublier ?</a>
    </div>
 </div>
+    </form>
   </ul>
 </header>
 

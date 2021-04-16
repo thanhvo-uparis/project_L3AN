@@ -136,18 +136,6 @@ td.niv_risque select {
     display: none;
 }
 
-td.role.active span {
-    display: none;
-}
-
-td.role.active select {
-    display: block;
-}
-
-td.role select {
-    display: none;
-}
-
 td.design.active span {
     display: none;
 }
@@ -196,36 +184,36 @@ td.commentaire .textarea-commentaire {
     display: none;
 }
 
-.notif-read{
-  background : #ccc;
+.notif-read {
+    background: #ccc;
 }
 
-.nav-link{
-  position: relative;
+.nav-link {
+    position: relative;
 }
 
-#notifs-count{
-  position: absolute;
-  top : 0;
-  right : 0;
-  background: white;
-  color :black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height : 15px;
-  width : 15px;
-  border-radius: 50%;
+#notifs-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: white;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
 }
 
-li.role.active span {
+.role.active span {
     display: none;
 }
 
-li.role.active select {
+.role.active select {
     display: block;
 }
 
-li.role select {
+.role select {
     display: none;
 }
