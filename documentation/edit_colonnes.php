@@ -2,7 +2,7 @@
 /*
   Realise la connexion avec la base de donnees
 */
-include 'application/bdd_connection.php';
+include '../connexion/bdd_connection.php';
       
     //Modification des valeurs pour l'affichage des colonnes
     $query=$pdo->prepare("update set_colonne set mission = ?,categorie=?, nom_du_controle=?, deadline=?,affecte_a=?, statut=?,niveau_de_risque=?,design=?,efficacite=?,commentaires=? where id= ?");
