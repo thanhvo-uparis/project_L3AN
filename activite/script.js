@@ -7,7 +7,7 @@ jQuery(document).ready(function ($) {
             var category_id = $(this).data('id');
             $.ajax({
                 type: "POST",
-                url: 'http://192.168.64.2/projet-L3AN1/Projet_L3AN1/activite/getDatasChart.php',
+                url: 'getDatasChart.php',
                 data: {
                     mission_id: mission_id,
                     category_id: category_id
@@ -169,7 +169,7 @@ jQuery(document).ready(function ($) {
 
             $.ajax({
                 type: "POST",
-                url: 'http://192.168.64.2/projet-L3AN1/Projet_L3AN1/activite/getDatasChart.php',
+                url: 'getDatasChart.php',
                 data: data,
                 success: function (response) {
                     if (response.status) {
@@ -204,7 +204,7 @@ jQuery(document).ready(function ($) {
         $('.title-chart').html($(this).find('option[value="'+ mission_id +'"]').html());
         $.ajax({
             type: "POST",
-            url: 'http://192.168.64.2/projet-L3AN1/Projet_L3AN1/activite/getCollaborateurs.php',
+            url: 'getCollaborateurs.php',
             data: {
                 mission_id: mission_id
             },
